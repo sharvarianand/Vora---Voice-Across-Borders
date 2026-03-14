@@ -1,0 +1,103 @@
+import { AzureOpenAI } from "openai";
+import Exa from "exa-js";
+import type { Product } from "@/types";
+
+const ai = new AzureOpenAI({
+  endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
+  apiKey: process.env.AZURE_OPENAI_API_KEY || "",
+  apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+});
+
+const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
+
+export interface CandidateLead {
+  name: string;
+  email: string;
+  company: string | null;
+  industry: string | null;
+  job_title: string | null;
+  source_url: string | null;
+}
+
+export async function findLeads(
+  userQuery: string,
+  product: Pick<Product, "name" | "description">
+): Promise<CandidateLead[]> {
+  const apiKey = process.env.EXA_API_KEY;
+  if (!apiKey) {
+    console.warn("EXA_API_KEY not set — skipping Exa search");
+    return [];
+  }
+
+  const exa = new Exa(apiKey);
+
+  const productContext = [product.name, product.description]
+    .filter(Boolean)
+    .join(" — ");
+
+  // Optimize query for People search as per Exa guide (describe what they work on)
+  const searchQuery = productContext
+    ? `${userQuery} relevant to ${productContext}`
+    : userQuery;
+
+  try {
+    const exaResults = await exa.searchAndContents(searchQuery, {
+      type: "auto",
+      numResults: 10,
+      category: "people",
+      highlights: { "maxCharacters": 4000 }
+    });
+
+    if (!exaResults.results || exaResults.results.length === 0) {
+      return [];
+    }
+
+    const searchContext = exaResults.results
+      .map((r: any) => `**${r.title}** (${r.url})\n${r.highlights?.join("\n") || r.text || ""}`)
+      .join("\n\n---\n\n");
+
+    const systemInstruction = `You are a B2B lead extraction assistant. Given web search results, extract individual people who could be sales leads.
+
+Product being sold: ${product.name}${product.description ? ` — ${product.description}` : ""}
+User's search intent: ${userQuery}
+
+Return a JSON object with this exact shape:
+{
+  "leads": [
+    {
+      "name": "Full Name",
+      "email": "",
+      "company": "Company name or null",
+      "industry": "Industry or null",
+      "job_title": "Job title or null",
+      "source_url": "URL where this person was found or null"
+    }
+  ]
+}
+
+Rules:
+- Extract real, named individuals only — no generic job roles without a name
+- If an email is found in the page, include it; otherwise leave it as empty string ""
+- Include the source URL from the search result where the person was found
+- If no relevant leads are found, return { "leads": [] }
+- Do not hallucinate data — only extract what is present in the search results`;
+
+    const response = await ai.chat.completions.create({
+      model: deployment,
+      messages: [
+        { role: "system", content: systemInstruction },
+        { role: "user", content: `Web search results:\n\n${searchContext}` }
+      ],
+      response_format: { type: "json_object" },
+    });
+
+    const raw = response.choices[0].message.content;
+    if (!raw) return [];
+
+    const parsed = JSON.parse(raw) as { leads: CandidateLead[] };
+    return Array.isArray(parsed.leads) ? parsed.leads : [];
+  } catch (err) {
+    console.error("Lead extraction failed:", err);
+    return [];
+  }
+}
