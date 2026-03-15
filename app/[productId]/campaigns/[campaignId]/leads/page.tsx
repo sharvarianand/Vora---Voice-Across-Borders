@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -23,6 +24,7 @@ import { LeadsTable } from "@/components/leads/leads-table";
 import { AiFindAssignDialog } from "@/components/leads/ai-find-assign-dialog";
 import { UserPlus, Loader2, ArrowLeft, Zap } from "lucide-react";
 import { toast } from "sonner";
+import { getLocaleMeta, getLeadLocale, toFlagEmoji } from "@/lib/lingo";
 import type { Lead, CampaignLead } from "@/types";
 import Link from "next/link";
 
@@ -146,8 +148,7 @@ export default function CampaignLeadsPage() {
         <div className="flex-1">
           <h1 className="text-2xl font-bold tracking-tight">Campaign Leads</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            {campaignLeads.length} lead{campaignLeads.length !== 1 ? "s" : ""}{" "}
-            assigned
+            {`${campaignLeads.length} leads assigned`}
           </p>
         </div>
         <Button
@@ -192,7 +193,7 @@ export default function CampaignLeadsPage() {
                 />
                 <div className="flex items-center justify-between pt-2">
                   <p className="text-sm text-muted-foreground">
-                    {selectedIds.size} selected
+                    {`${selectedIds.size} selected`}
                   </p>
                   <Button
                     onClick={handleAssign}
@@ -201,8 +202,7 @@ export default function CampaignLeadsPage() {
                     {assigning && (
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     )}
-                    Assign {selectedIds.size} Lead
-                    {selectedIds.size !== 1 ? "s" : ""}
+                    {`Assign ${selectedIds.size} Lead`}
                   </Button>
                 </div>
               </>
@@ -216,6 +216,7 @@ export default function CampaignLeadsPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Lead</TableHead>
+              <TableHead>Locale</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Current Node</TableHead>
               <TableHead>Status</TableHead>
@@ -228,7 +229,7 @@ export default function CampaignLeadsPage() {
             {campaignLeads.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="h-24 text-center text-muted-foreground"
                 >
                   No leads assigned yet. Click &quot;Assign Leads&quot; to add
@@ -240,6 +241,19 @@ export default function CampaignLeadsPage() {
                 <TableRow key={cl.id}>
                   <TableCell className="font-medium">
                     {cl.lead?.name || "—"}
+                  </TableCell>
+                  <TableCell>
+                    {(() => {
+                      const locale = getLocaleMeta(getLeadLocale(cl.lead));
+                      return locale ? (
+                        <span className="inline-flex items-center gap-2 text-sm">
+                          <span>{toFlagEmoji(locale.flag)}</span>
+                          <span className="text-muted-foreground">{locale.code.toUpperCase()}</span>
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">—</span>
+                      );
+                    })()}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {cl.lead?.email || "—"}

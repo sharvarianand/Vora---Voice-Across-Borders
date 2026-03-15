@@ -1,13 +1,20 @@
 import { AzureOpenAI } from "openai";
+import {
+  getLeadLocale,
+  normalizeLocale,
+} from "@/lib/lingo";
+import { localizeEmailContent, localizeHtmlText, localizePlainText } from "@/lib/lingo-server";
 import type { Lead, EnrichedLeadData, KnowledgeBaseItem, ThreadMessage } from "@/types";
 
-const ai = new AzureOpenAI({
-  endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
-  apiKey: process.env.AZURE_OPENAI_API_KEY || "",
-  apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
-});
-
 const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
+
+function getAzureOpenAIClient() {
+  return new AzureOpenAI({
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
+    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+  });
+}
 
 /**
  * Converts an array of KnowledgeBaseItem into a human-readable block that can
@@ -33,7 +40,13 @@ export async function generateMessage(
   prompt: string,
   lead: Lead | null,
   productDescription?: string,
-  options?: { senderEmail?: string; isFollowUp?: boolean; enrichedData?: EnrichedLeadData | null; knowledgeBase?: KnowledgeBaseItem[] }
+  options?: {
+    senderEmail?: string;
+    isFollowUp?: boolean;
+    enrichedData?: EnrichedLeadData | null;
+    knowledgeBase?: KnowledgeBaseItem[];
+    targetLocale?: string | null;
+  }
 ): Promise<{ subject: string; body: string }> {
   const effectivePrompt = lead
     ? prompt
@@ -92,7 +105,7 @@ export async function generateMessage(
     knowledgeBaseInstruction +
     enrichmentInstruction;
 
-  const response = await ai.chat.completions.create({
+  const response = await getAzureOpenAIClient().chat.completions.create({
     model: deployment,
     messages: [
       { role: "system", content: systemInstruction },
@@ -100,17 +113,19 @@ export async function generateMessage(
     ],
     response_format: { type: "json_object" },
   });
-
   const content = response.choices[0].message.content;
   if (!content) {
     throw new Error("No response from Azure OpenAI");
   }
 
   const parsed = JSON.parse(content) as { subject: string; body: string };
-  return {
-    subject: parsed.subject,
-    body: parsed.body,
-  };
+  return localizeEmailContent(
+    {
+      subject: parsed.subject,
+      body: parsed.body,
+    },
+    resolveTargetLocale(lead, options?.targetLocale)
+  );
 }
 
 export interface AutoReplyResult {
@@ -160,7 +175,7 @@ export async function generateAutoReply(
     .filter(Boolean)
     .join("\n");
 
-  const response = await ai.chat.completions.create({
+  const response = await getAzureOpenAIClient().chat.completions.create({
     model: deployment,
     messages: [
       { role: "system", content: systemInstruction },
@@ -179,18 +194,30 @@ export async function generateAutoReply(
     reasoning?: string;
   };
 
+  const targetLocale = getLeadLocale(lead);
+  const [subject, body, reasoning] = await Promise.all([
+    parsed.subject ? localizePlainText(parsed.subject, targetLocale) : Promise.resolve(null),
+    parsed.body ? localizeHtmlText(parsed.body, targetLocale) : Promise.resolve(null),
+    parsed.reasoning ? localizePlainText(parsed.reasoning, targetLocale) : Promise.resolve(""),
+  ]);
+
   return {
     can_answer: Boolean(parsed.can_answer),
-    subject: parsed.subject ?? null,
-    body: parsed.body ?? null,
-    reasoning: parsed.reasoning ?? "",
+    subject,
+    body,
+    reasoning,
   };
+}
+
+function resolveTargetLocale(lead: Lead | null, targetLocale?: string | null) {
+  return normalizeLocale(targetLocale) ?? getLeadLocale(lead);
 }
 
 export async function generateWhatsAppMessage(
   prompt: string,
   lead: Lead | null,
-  productDescription?: string
+  productDescription?: string,
+  options?: { targetLocale?: string | null }
 ): Promise<{ body: string }> {
   const effectivePrompt = lead
     ? prompt
@@ -212,7 +239,7 @@ export async function generateWhatsAppMessage(
     "Plain text only — no HTML, no markdown, no bullet symbols. Conversational tone. " +
     'Respond with JSON: {"body": "..."}';
 
-  const response = await ai.chat.completions.create({
+  const response = await getAzureOpenAIClient().chat.completions.create({
     model: deployment,
     messages: [
       { role: "system", content: systemInstruction },
@@ -224,8 +251,16 @@ export async function generateWhatsAppMessage(
   const raw = response.choices[0].message.content ?? "{}";
   try {
     const parsed = JSON.parse(raw) as { body?: string };
-    return { body: parsed.body?.trim() || "Hi {{name}}, following up — would love to connect." };
+    const body = parsed.body?.trim() || "Hi {{name}}, following up — would love to connect.";
+    return {
+      body: await localizePlainText(body, resolveTargetLocale(lead, options?.targetLocale)),
+    };
   } catch {
-    return { body: "Hi, just following up — would love to connect." };
+    return {
+      body: await localizePlainText(
+        "Hi, just following up — would love to connect.",
+        resolveTargetLocale(lead, options?.targetLocale)
+      ),
+    };
   }
 }

@@ -18,6 +18,8 @@ import {
   recordDeliverabilityEvent,
   classifyBounceType,
 } from "@/lib/deliverability";
+import { getLeadLocale } from "@/lib/lingo";
+import { localizeEmailContent, localizePlainText } from "@/lib/lingo-server";
 
 function getSupabase() {
   return createClient(
@@ -242,6 +244,7 @@ const campaignHandlers: WorkflowHandlers<CampaignExecutionContext> = {
     let subject: string;
     let htmlBody: string;
     let cacheHit = false;
+    const targetLocale = getLeadLocale(context.lead);
 
     if (mode === "same_for_all") {
       const cachedSubject =
@@ -252,8 +255,15 @@ const campaignHandlers: WorkflowHandlers<CampaignExecutionContext> = {
       if (cachedSubject && cachedBody) {
         // Cache hit — substitute placeholders for this specific lead
         cacheHit = true;
-        subject = threadSubject || interpolate(cachedSubject);
-        htmlBody = interpolate(cachedBody);
+        const localized = await localizeEmailContent(
+          {
+            subject: threadSubject || interpolate(cachedSubject),
+            body: interpolate(cachedBody),
+          },
+          targetLocale
+        );
+        subject = localized.subject;
+        htmlBody = localized.body;
       } else {
         // Cache miss — generate once, then persist it back into workflow_json
         const message = await generateMessage(prompt, null, context.productDescription, {
@@ -278,8 +288,15 @@ const campaignHandlers: WorkflowHandlers<CampaignExecutionContext> = {
           .eq("id", context.campaign.id);
         context.campaign.workflow_json = updatedWorkflow;
 
-        subject = threadSubject || interpolate(message.subject);
-        htmlBody = interpolate(message.body);
+        const localized = await localizeEmailContent(
+          {
+            subject: threadSubject || interpolate(message.subject),
+            body: interpolate(message.body),
+          },
+          targetLocale
+        );
+        subject = localized.subject;
+        htmlBody = localized.body;
       }
     } else {
       // Personalized — unique email per lead
@@ -384,11 +401,12 @@ const campaignHandlers: WorkflowHandlers<CampaignExecutionContext> = {
         .replace(/\{\{industry\}\}/g, context.lead.industry || "your industry");
 
     let body: string;
+    const targetLocale = getLeadLocale(context.lead);
 
     if (mode === "same_for_all") {
       const cachedBody = typeof node.data.cached_body === "string" ? node.data.cached_body : null;
       if (cachedBody) {
-        body = interpolate(cachedBody);
+        body = await localizePlainText(interpolate(cachedBody), targetLocale);
       } else {
         const result = await generateWhatsAppMessage(prompt, null, context.productDescription);
         node.data.cached_body = result.body;
@@ -401,7 +419,7 @@ const campaignHandlers: WorkflowHandlers<CampaignExecutionContext> = {
           .update({ workflow_json: updatedWorkflow })
           .eq("id", context.campaign.id);
         context.campaign.workflow_json = updatedWorkflow;
-        body = interpolate(result.body);
+        body = await localizePlainText(interpolate(result.body), targetLocale);
       }
     } else {
       const result = await generateWhatsAppMessage(prompt, context.lead, context.productDescription);

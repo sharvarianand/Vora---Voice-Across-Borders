@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { MoreVertical, Trash2, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { getLocaleMeta, getLeadLocale, toFlagEmoji } from "@/lib/lingo";
 import type { Lead } from "@/types";
 
 interface LeadsTableProps {
@@ -109,7 +110,7 @@ export function LeadsTable({
   }
 
   const colCount = (selectable ? 1 : 0) +
-    (hasDynamicCols ? dynamicColumns.length : 6) + 3; // +3 = Enriched, Created, Actions
+    (hasDynamicCols ? dynamicColumns.length : 6) + 4; // +4 = Locale, Enriched, Created, Actions
 
   return (
     <>
@@ -134,6 +135,7 @@ export function LeadsTable({
                   <TableHead>Created</TableHead>
                 </>
               )}
+              <TableHead>Locale</TableHead>
               <TableHead>Enriched</TableHead>
               {hasDynamicCols && <TableHead>Created</TableHead>}
               <TableHead className="w-10" />
@@ -191,6 +193,19 @@ export function LeadsTable({
                       </TableCell>
                     </>
                   )}
+                  <TableCell>
+                    {(() => {
+                      const locale = getLocaleMeta(getLeadLocale(lead));
+                      return locale ? (
+                        <span className="inline-flex items-center gap-2 text-sm">
+                          <span>{toFlagEmoji(locale.flag)}</span>
+                          <span className="text-muted-foreground">{locale.label}</span>
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">Detect</span>
+                      );
+                    })()}
+                  </TableCell>
                   <TableCell>
                     {enrichedIds.has(lead.id) ? (
                       <span className="inline-flex items-center gap-1 text-xs text-green-600 dark:text-green-400 font-medium">
