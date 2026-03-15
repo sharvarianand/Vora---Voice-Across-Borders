@@ -4,10 +4,25 @@ import { useRef } from "react";
 import gsap from "gsap";
 import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 import Image from "next/image";
-import Link from "next/link";
+import { LandingAuthButton } from "@/components/auth/landing-auth-button";
 
 export default function Navbar() {
    const navRef = useRef<HTMLElement>(null);
+   const navLinks = [
+      { label: "Features", target: "features" },
+      { label: "Dashboard", target: "dashboard" },
+      { label: "Contact", target: "contact" },
+   ] as const;
+
+   const scrollToSection = (sectionId: string) => {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      const navHeight = navRef.current?.getBoundingClientRect().height ?? 64;
+      const top = section.getBoundingClientRect().top + window.scrollY - navHeight - 28;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      window.history.replaceState(null, "", `/#${sectionId}`);
+   };
 
    useIsomorphicLayoutEffect(() => {
       const ctx = gsap.context(() => {
@@ -48,8 +63,9 @@ export default function Navbar() {
          }}
       >
          {/* Logo */}
-         <Link
-            href="/"
+         <button
+            type="button"
+            onClick={() => scrollToSection("hero")}
             style={{
                display: "flex",
                alignItems: "center",
@@ -58,6 +74,9 @@ export default function Navbar() {
                fontSize: "1.15rem",
                fontWeight: 600,
                color: "var(--text-primary)",
+               background: "transparent",
+               border: "none",
+               cursor: "pointer",
             }}
          >
             <Image src="/vora_logo.png" alt="Vora" width={28} height={28} />
@@ -65,7 +84,7 @@ export default function Navbar() {
                <span>Vora</span>
                <span style={{ fontSize: "0.55rem", fontWeight: 400, color: "var(--text-secondary)", letterSpacing: "0.08em", textTransform: "lowercase" }}>voice across borders</span>
             </span>
-         </Link>
+         </button>
 
          {/* Nav Links */}
          <div
@@ -75,15 +94,19 @@ export default function Navbar() {
                alignItems: "center",
             }}
          >
-            {["Features", "Dashboard", "Contact"].map((link) => (
-               <Link
-                  key={link}
-                  href={link === "Dashboard" ? "/dashboard" : `/#${link.toLowerCase().replace(/\s+/g, "-")}`}
+            {navLinks.map((link) => (
+               <button
+                  key={link.label}
+                  type="button"
+                  onClick={() => scrollToSection(link.target)}
                   style={{
                      color: "var(--text-secondary)",
                      fontSize: "0.875rem",
                      fontFamily: "var(--font-body)",
                      transition: "color 200ms ease",
+                     background: "transparent",
+                     border: "none",
+                     cursor: "pointer",
                   }}
                   onMouseEnter={(e) =>
                      (e.currentTarget.style.color = "var(--accent-primary)")
@@ -92,14 +115,13 @@ export default function Navbar() {
                      (e.currentTarget.style.color = "var(--text-secondary)")
                   }
                >
-                  {link}
-               </Link>
+                  {link.label}
+               </button>
             ))}
          </div>
 
           {/* CTA Button */}
-          <Link
-             href="/dashboard"
+          <LandingAuthButton
              style={{
                 padding: "0.5rem 1.25rem",
                 borderRadius: "100px",
@@ -109,18 +131,12 @@ export default function Navbar() {
                 fontWeight: 600,
                 fontFamily: "var(--font-body)",
                 transition: "all 200ms ease",
-             }}
-             onMouseEnter={(e) => {
-                e.currentTarget.style.background = "var(--accent-primary)";
-                e.currentTarget.style.color = "var(--text-primary)";
-             }}
-             onMouseLeave={(e) => {
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "var(--accent-primary)";
+                background: "transparent",
+                cursor: "pointer",
              }}
           >
              Dashboard
-          </Link>
+          </LandingAuthButton>
       </nav>
    );
 }

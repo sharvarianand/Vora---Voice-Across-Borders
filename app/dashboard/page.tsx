@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SignOutButton, useAuth, useUser } from "@clerk/nextjs";
 import { ProductCard } from "@/components/dashboard/product-card";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { Plus, Zap } from "lucide-react";
+import { Plus, Zap, LogOut } from "lucide-react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 
 interface ProductWithCounts {
@@ -20,6 +22,8 @@ interface ProductWithCounts {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { isLoaded } = useAuth();
+  const { user } = useUser();
   const [products, setProducts] = useState<ProductWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +36,21 @@ export default function DashboardPage() {
       })
       .catch(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      const hasWelcomed = sessionStorage.getItem("vora_welcomed");
+      if (!hasWelcomed) {
+        toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ""}!`);
+        sessionStorage.setItem("vora_welcomed", "true");
+      }
+    }
+  }, [isLoaded, user]);
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("vora_welcomed");
+    router.push("/");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,6 +65,12 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
+            <SignOutButton redirectUrl="/">
+              <Button variant="ghost" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </SignOutButton>
           </div>
         </div>
       </header>

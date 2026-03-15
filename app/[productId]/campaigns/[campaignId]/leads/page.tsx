@@ -20,6 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LeadsTable } from "@/components/leads/leads-table";
+import { AiFindAssignDialog } from "@/components/leads/ai-find-assign-dialog";
 import { UserPlus, Loader2, ArrowLeft, Zap } from "lucide-react";
 import { toast } from "sonner";
 import type { Lead, CampaignLead } from "@/types";
@@ -161,6 +162,11 @@ export default function CampaignLeadsPage() {
           )}
           Process Now
         </Button>
+        <AiFindAssignDialog
+          productId={productId}
+          campaignId={campaignId}
+          onAssigned={fetchCampaignLeads}
+        />
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
             <Button>

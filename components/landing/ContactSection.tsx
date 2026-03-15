@@ -3,6 +3,7 @@
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { LandingAuthButton } from "@/components/auth/landing-auth-button";
 
 if (typeof window !== "undefined") {
    gsap.registerPlugin(ScrollTrigger);
@@ -95,8 +96,7 @@ export default function ContactSection() {
             that&apos;s safe, compliant, and built around the human conversation.
          </p>
 
-          <form
-             action="/dashboard"
+          <div
              style={{
                 display: "flex",
                 gap: "0.75rem",
@@ -130,8 +130,7 @@ export default function ContactSection() {
                   e.currentTarget.style.boxShadow = "none";
                }}
             />
-             <button
-                type="submit"
+             <LandingAuthButton
                 style={{
                    padding: "0.85rem 1.5rem",
                    background: "var(--accent-primary)",
@@ -142,13 +141,12 @@ export default function ContactSection() {
                    fontFamily: "var(--font-body)",
                    whiteSpace: "nowrap",
                    transition: "opacity 200ms ease",
+                   cursor: "pointer",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
              >
                 Go to Dashboard →
-             </button>
-         </form>
+             </LandingAuthButton>
+         </div>
 
          <p
             style={{

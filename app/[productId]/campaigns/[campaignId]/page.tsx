@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   ReactFlow,
@@ -79,7 +79,6 @@ function BuilderInner() {
   const [rateLimitValue, setRateLimitValue] = useState<string>("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
-  const loadedRef = useRef(false);
 
   const {
     nodes,
@@ -89,12 +88,13 @@ function BuilderInner() {
     onConnect,
     addNode,
     loadWorkflow,
+    clear,
   } = useWorkflowStore();
 
   const { screenToFlowPosition, toObject } = useReactFlow();
 
   useEffect(() => {
-    if (loadedRef.current) return;
+    clear();
     fetch(`/api/campaigns/${campaignId}`)
       .then((r) => r.json())
       .then((data) => {
@@ -105,10 +105,9 @@ function BuilderInner() {
             : ""
         );
         loadWorkflow(data.workflow_json?.nodes || [], data.workflow_json?.edges || []);
-        loadedRef.current = true;
       })
-       .catch(() => toast.error("Failed to load campaign"));
-  }, [campaignId, loadWorkflow]);
+      .catch(() => toast.error("Failed to load campaign"));
+  }, [campaignId, loadWorkflow, clear]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();

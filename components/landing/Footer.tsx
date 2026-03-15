@@ -1,7 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";export default function Footer() {
+import Link from "next/link";
+
+export default function Footer() {
+   const scrollToSection = (sectionId: string) => {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      const top = section.getBoundingClientRect().top + window.scrollY - 92;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      window.history.replaceState(null, "", `/#${sectionId}`);
+   };
+
    return (
       <footer
          style={{
@@ -37,25 +48,82 @@ import Link from "next/link";export default function Footer() {
             </Link>
 
             <div style={{ display: "flex", gap: "2rem" }}>
-               {["Features", "Dashboard", "Contact", "Privacy"].map((link) => (
-                  <Link
-                     key={link}
-                     href={link === "Dashboard" ? "/dashboard" : link === "Privacy" ? "/privacy" : `/#${link.toLowerCase().replace(/\s+/g, "-")}`}
-                     style={{
-                        color: "var(--text-tertiary)",
-                        fontSize: "0.8125rem",
-                        transition: "color 200ms ease",
-                     }}
-                     onMouseEnter={(e) =>
-                        (e.currentTarget.style.color = "var(--text-secondary)")
-                     }
-                     onMouseLeave={(e) =>
-                        (e.currentTarget.style.color = "var(--text-tertiary)")
-                     }
-                  >
-                     {link}
-                  </Link>
-               ))}
+               <button
+                  type="button"
+                  onClick={() => scrollToSection("features")}
+                  style={{
+                     color: "var(--text-tertiary)",
+                     fontSize: "0.8125rem",
+                     transition: "color 200ms ease",
+                     background: "transparent",
+                     border: "none",
+                     cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) =>
+                     (e.currentTarget.style.color = "var(--text-secondary)")
+                  }
+                  onMouseLeave={(e) =>
+                     (e.currentTarget.style.color = "var(--text-tertiary)")
+                  }
+               >
+                  Features
+               </button>
+               <button
+                  type="button"
+                  onClick={() => scrollToSection("dashboard")}
+                  style={{
+                     color: "var(--text-tertiary)",
+                     fontSize: "0.8125rem",
+                     transition: "color 200ms ease",
+                     background: "transparent",
+                     border: "none",
+                     cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) =>
+                     (e.currentTarget.style.color = "var(--text-secondary)")
+                  }
+                  onMouseLeave={(e) =>
+                     (e.currentTarget.style.color = "var(--text-tertiary)")
+                  }
+               >
+                  Dashboard
+               </button>
+               <button
+                  type="button"
+                  onClick={() => scrollToSection("contact")}
+                  style={{
+                     color: "var(--text-tertiary)",
+                     fontSize: "0.8125rem",
+                     transition: "color 200ms ease",
+                     background: "transparent",
+                     border: "none",
+                     cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) =>
+                     (e.currentTarget.style.color = "var(--text-secondary)")
+                  }
+                  onMouseLeave={(e) =>
+                     (e.currentTarget.style.color = "var(--text-tertiary)")
+                  }
+               >
+                  Contact
+               </button>
+               <Link
+                  href="/privacy"
+                  style={{
+                     color: "var(--text-tertiary)",
+                     fontSize: "0.8125rem",
+                     transition: "color 200ms ease",
+                  }}
+                  onMouseEnter={(e) =>
+                     (e.currentTarget.style.color = "var(--text-secondary)")
+                  }
+                  onMouseLeave={(e) =>
+                     (e.currentTarget.style.color = "var(--text-tertiary)")
+                  }
+               >
+                  Privacy
+               </Link>
             </div>
          </div>
 

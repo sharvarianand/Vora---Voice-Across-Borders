@@ -4,7 +4,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 import WorkflowVisual from "./WorkflowVisual";
-import Link from "next/link";
+import { LandingAuthButton } from "@/components/auth/landing-auth-button";
 
 export default function HeroSection() {
    const sectionRef = useRef<HTMLElement>(null);
@@ -60,10 +60,19 @@ export default function HeroSection() {
       return () => ctx.revert();
    }, []);
 
+   const scrollToSection = (sectionId: string) => {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      const top = section.getBoundingClientRect().top + window.scrollY - 92;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+      window.history.replaceState(null, "", `/#${sectionId}`);
+   };
+
    return (
       <section
          ref={sectionRef}
-         id="how-it-works"
+         id="hero"
          style={{
             height: "100vh",
             position: "relative",
@@ -149,8 +158,7 @@ export default function HeroSection() {
                       gap: "1.2rem",
                   }}
                >
-                  <Link
-                     href="/dashboard"
+                  <LandingAuthButton
                      style={{
                         padding: "1.1rem 2.8rem",
                         background: "var(--accent-primary)",
@@ -162,21 +170,15 @@ export default function HeroSection() {
                         boxShadow: "0 10px 40px var(--accent-primary-glow)",
                         textDecoration: "none",
                         display: "inline-block",
-                     }}
-                     onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow = "0 15px 50px var(--accent-primary-glow)";
-                     }}
-                     onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "0 10px 40px var(--accent-primary-glow)";
+                        cursor: "pointer",
                      }}
                   >
                      Start Building
-                  </Link>
+                  </LandingAuthButton>
 
-                  <a
-                     href="#dashboard"
+                  <button
+                     type="button"
+                     onClick={() => scrollToSection("dashboard")}
                      style={{
                         padding: "1.05rem 2.4rem",
                         border: "1px solid var(--bg-border)",
@@ -203,7 +205,7 @@ export default function HeroSection() {
                   >
                      How it works
                      <span style={{ fontSize: "1.2rem" }}>↓</span>
-                  </a>
+                  </button>
                </div>
             </div>
 

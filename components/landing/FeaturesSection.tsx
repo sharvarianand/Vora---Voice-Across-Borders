@@ -99,10 +99,11 @@ export default function FeaturesSection() {
    const cardsTrackRef = useRef<HTMLDivElement>(null);
    const stickyRef = useRef<HTMLDivElement>(null);
    const totalFeatures = features.length;
-   const introPhase = 0.16;
+   const introPhase = 0.02;
    const navOffset = "6.5rem";
-   const introScrollVh = 110;
-   const featureScrollVh = 125;
+   const introScrollVh = 8;
+   const featureScrollVh = 58;
+   const outroScrollVh = 32;
 
    useEffect(() => {
       const section = sectionRef.current;
@@ -151,28 +152,32 @@ export default function FeaturesSection() {
 
             const progress = introPhase + (i / totalFeatures) * scrollRange;
             const nextProgress = introPhase + ((i + 1) / totalFeatures) * scrollRange;
-            const revealStart = progress + featureSegment * 0.03;
-            const revealEnd = progress + featureSegment * 0.36;
+            if (i === 0) {
+               gsap.set(featureEl, { opacity: 1, y: 0 });
+            } else {
+               const revealStart = progress;
+               const revealEnd = progress + featureSegment * 0.24;
 
-            gsap.fromTo(
-               featureEl,
-               { opacity: 0, y: 90 },
-               {
-                  opacity: 1,
-                  y: 0,
-                  ease: "power2.out",
-                  scrollTrigger: {
-                     trigger: cardsTrack,
-                     start: `${revealStart * 100}% top`,
-                     end: `${revealEnd * 100}% top`,
-                     scrub: 0.6,
-                  },
-               }
-            );
+               gsap.fromTo(
+                  featureEl,
+                  { opacity: 0, y: 90 },
+                  {
+                     opacity: 1,
+                     y: 0,
+                     ease: "power2.out",
+                     scrollTrigger: {
+                        trigger: cardsTrack,
+                        start: `${revealStart * 100}% top`,
+                        end: `${revealEnd * 100}% top`,
+                        scrub: 0.6,
+                     },
+                  }
+               );
+            }
 
             if (i < totalFeatures - 1) {
-               const exitStart = nextProgress - featureSegment * 0.28;
-               const exitEnd = nextProgress - featureSegment * 0.04;
+               const exitStart = nextProgress - featureSegment * 0.12;
+               const exitEnd = nextProgress;
                gsap.to(featureEl, {
                   opacity: 0,
                   y: -40,
@@ -206,7 +211,7 @@ export default function FeaturesSection() {
       <section ref={sectionRef} id="features" style={{ position: "relative", background: "var(--bg-base)" }}>
          <div
             ref={cardsTrackRef}
-            style={{ position: "relative", height: `${introScrollVh + totalFeatures * featureScrollVh}vh` }}
+            style={{ position: "relative", height: `${introScrollVh + totalFeatures * featureScrollVh + outroScrollVh}vh` }}
          >
             <div
                ref={stickyRef}
