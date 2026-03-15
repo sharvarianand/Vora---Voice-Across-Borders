@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { LingoProvider } from "@lingo.dev/compiler/react/next";
+import { getServerLocale } from "@lingo.dev/compiler/virtual/locale/server";
 import { Geist, Geist_Mono, Inter, Bebas_Neue } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -73,11 +75,13 @@ export const metadata: Metadata = {
   description: "AI-powered outreach automation platform",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getServerLocale();
+
   return (
     <ClerkProvider
       appearance={clerkAppearance}
@@ -86,18 +90,20 @@ export default function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <html lang="en" suppressHydrationWarning>
+      <html lang={locale} suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${bebasNeue.variable} font-sans antialiased`}
         >
-          <GSAPProvider>
-            <LenisProvider>
-              <ThemeProvider>
-                {children}
-                <Toaster />
-              </ThemeProvider>
-            </LenisProvider>
-          </GSAPProvider>
+          <LingoProvider initialLocale={locale} devWidget={{ enabled: false }}>
+            <GSAPProvider>
+              <LenisProvider>
+                <ThemeProvider>
+                  {children}
+                  <Toaster />
+                </ThemeProvider>
+              </LenisProvider>
+            </GSAPProvider>
+          </LingoProvider>
         </body>
       </html>
     </ClerkProvider>

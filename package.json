@@ -7,11 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lingo": "lingo.dev",
     "worker": "npx tsx worker/index.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.4",
     "@gsap/react": "^2.1.2",
+    "@lingo.dev/compiler": "^0.4.0",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.98.0",
     "@tailwindcss/typography": "^0.5.19",
@@ -24,6 +26,7 @@
     "googleapis": "^171.4.0",
     "gsap": "^3.14.2",
     "lenis": "^1.3.18",
+    "lingo.dev": "^0.133.2",
     "lucide-react": "^0.577.0",
     "nanoid": "^5.1.6",
     "next": "16.1.6",

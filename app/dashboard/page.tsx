@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignOutButton, useAuth, useUser } from "@clerk/nextjs";
+
 import { ProductCard } from "@/components/dashboard/product-card";
+import { LocaleSwitcher } from "@/components/locale/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Plus, Zap, LogOut } from "lucide-react";
@@ -41,7 +43,7 @@ export default function DashboardPage() {
     if (isLoaded && user) {
       const hasWelcomed = sessionStorage.getItem("vora_welcomed");
       if (!hasWelcomed) {
-        toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ""}!`);
+        toast.success("Welcome" + (user.firstName ? `, ${user.firstName}` : "") + "!");
         sessionStorage.setItem("vora_welcomed", "true");
       }
     }
@@ -64,6 +66,7 @@ export default function DashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <LocaleSwitcher />
             <ThemeToggle />
             <SignOutButton redirectUrl="/">
               <Button variant="ghost" size="sm" onClick={handleLogout}>
@@ -105,8 +108,7 @@ export default function DashboardPage() {
             </div>
             <h2 className="text-lg font-semibold">No products yet</h2>
             <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-              Create your first product to start managing leads and running
-              outreach campaigns.
+              Create your first product to start managing leads and running outreach campaigns.
             </p>
             <Button
               className="mt-4"

@@ -2,18 +2,15 @@
 
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
+
 import { ProductSelector } from "@/components/product-selector";
 import { CampaignSelector } from "@/components/campaign-selector";
+import { LocaleSwitcher } from "@/components/locale/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Separator } from "@/components/ui/separator";
 import { Users, Megaphone } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-
-const navItems = [
-  { label: "Campaigns", href: "/campaigns", icon: Megaphone },
-  { label: "Leads List", href: "/leads", icon: Users },
-];
 
 export default function ProductLayout({
   children,
@@ -23,6 +20,11 @@ export default function ProductLayout({
   const params = useParams();
   const pathname = usePathname();
   const productId = params.productId as string;
+
+  const navItems = [
+    { label: "Campaigns", href: "/campaigns", icon: Megaphone },
+    { label: "Leads List", href: "/leads", icon: Users },
+  ];
 
   // Hide sidebar when inside a campaign detail (campaignId segment present)
   const isCampaignDetail = /\/campaigns\/[^/]/.test(pathname);
@@ -43,7 +45,10 @@ export default function ProductLayout({
             <ProductSelector />
             <CampaignSelector />
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            <LocaleSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
