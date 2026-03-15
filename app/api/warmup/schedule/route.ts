@@ -1,10 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import {
-  getEffectiveDailyLimit,
-  advanceWarmupDay,
-  generateWarmupProjection,
-} from "@/lib/deliverability";
+import { generateWarmupProjection } from "@/lib/deliverability";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();

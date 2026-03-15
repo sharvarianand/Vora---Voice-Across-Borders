@@ -14,7 +14,7 @@
  */
 
 import makeWASocket, {
-  useMultiFileAuthState,
+  useMultiFileAuthState as createBaileysAuthState,
   DisconnectReason,
   Browsers,
   type WASocket,
@@ -43,7 +43,7 @@ const AUTH_DIR = resolve(process.cwd(), "whatsapp-session");
 // ─── Init / reconnect ─────────────────────────────────────────────────────────
 
 export async function initWhatsApp(): Promise<void> {
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+  const { state, saveCreds } = await createBaileysAuthState(AUTH_DIR);
 
   sock = makeWASocket({
     auth: state,

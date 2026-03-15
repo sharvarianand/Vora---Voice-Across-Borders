@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+
 import { Search, Loader2, ExternalLink, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -66,7 +67,6 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
         emailDraft: c.email,
       }));
       setCandidates(editable);
-      // Pre-select all by default
       setSelectedIndices(new Set(editable.map((_, i) => i)));
       setStep("review");
     } catch (err) {
@@ -145,11 +145,11 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
     setAdding(false);
 
     if (added > 0) {
-      toast.success(`${added} lead${added !== 1 ? "s" : ""} added`);
+      toast.success(`${added} leads added`);
       onAdded();
     }
     if (errors.length > 0) {
-      toast.error(`${errors.length} lead${errors.length !== 1 ? "s" : ""} failed to add`);
+      toast.error(`${errors.length} leads failed to add`);
     }
 
     setOpen(false);
@@ -170,8 +170,8 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
               Find Leads with Web Search
             </DialogTitle>
             <DialogDescription>
-              Describe the type of leads you&apos;re looking for. The search will
-              automatically factor in your product context.
+              Describe the type of leads you&apos;re looking for. The search
+              will automatically factor in your product context.
             </DialogDescription>
           </DialogHeader>
 
@@ -188,8 +188,7 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
                 disabled={searching}
               />
               <p className="text-xs text-muted-foreground">
-                Tip: Be specific about role, industry, and geography for better
-                results. Press ⌘↵ to search.
+                Tip: Be specific about role, industry, and geography for better results. Press ⌘↵ to search.
               </p>
               <Button
                 onClick={handleSearch}
@@ -223,7 +222,7 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
                   <span className="text-sm text-muted-foreground">
                     {candidates.length === 0
                       ? "No leads found"
-                      : `${candidates.length} lead${candidates.length !== 1 ? "s" : ""} found`}
+                      : `${candidates.length} leads found`}
                   </span>
                   {candidates.length > 0 && (
                     <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={toggleAll}>
@@ -237,8 +236,7 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
 
               {candidates.length === 0 ? (
                 <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm py-10">
-                  No leads could be extracted from the search results. Try a
-                  more specific query.
+                  No leads could be extracted from the search results. Try a more specific query.
                 </div>
               ) : (
                 <div className="overflow-y-auto flex-1 border rounded-md divide-y">
@@ -291,7 +289,7 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
                         </div>
                         <div onClick={(e) => e.stopPropagation()}>
                           <Input
-                            placeholder="Email address (will be set as placeholder if left blank)"
+                            placeholder="Email address (optional)"
                             className="h-7 text-xs mt-1"
                             value={lead.emailDraft}
                             onChange={(e) => updateEmail(i, e.target.value)}
@@ -306,7 +304,7 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
               {candidates.length > 0 && (
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-sm text-muted-foreground">
-                    {selectedIndices.size} selected
+                    {`${selectedIndices.size} selected`}
                   </span>
                   <Button
                     onClick={handleAdd}
@@ -318,7 +316,7 @@ export function FindLeadsDialog({ productId, onAdded }: FindLeadsDialogProps) {
                     ) : null}
                     {adding
                       ? "Adding…"
-                      : `Add ${selectedIndices.size} lead${selectedIndices.size !== 1 ? "s" : ""}`}
+                      : `Add ${selectedIndices.size} leads`}
                   </Button>
                 </div>
               )}

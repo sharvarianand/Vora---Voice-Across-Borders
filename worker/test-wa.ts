@@ -4,7 +4,7 @@
  */
 
 import makeWASocket, {
-  useMultiFileAuthState,
+  useMultiFileAuthState as createBaileysAuthState,
   DisconnectReason,
   Browsers,
 } from "@whiskeysockets/baileys";
@@ -15,7 +15,7 @@ const AUTH_DIR = resolve(process.cwd(), "whatsapp-session-test");
 
 async function run() {
   console.log("[Test] Starting Baileys v7 test...");
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+  const { state, saveCreds } = await createBaileysAuthState(AUTH_DIR);
   console.log("[Test] Auth state loaded, has creds:", !!state.creds?.me);
 
   const sock = makeWASocket({

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+
 import { LeadsTable } from "@/components/leads/leads-table";
 import { UploadDialog } from "@/components/leads/upload-dialog";
 import { FindLeadsDialog } from "@/components/leads/find-leads-dialog";
@@ -25,7 +26,11 @@ export default function LeadsPage() {
   }, [productId]);
 
   useEffect(() => {
-    fetchLeads();
+    const id = window.setTimeout(() => {
+      void fetchLeads();
+    }, 0);
+
+    return () => window.clearTimeout(id);
   }, [fetchLeads]);
 
   return (
@@ -34,7 +39,7 @@ export default function LeadsPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Leads</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            {leads.length} lead{leads.length !== 1 ? "s" : ""} in this product
+            {`${leads.length} leads in this product`}
           </p>
         </div>
         <div className="flex items-center gap-2">

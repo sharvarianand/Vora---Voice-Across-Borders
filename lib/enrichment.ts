@@ -3,13 +3,15 @@ import Exa from "exa-js";
 import type { Lead } from "@/types";
 import type { EnrichedLeadData } from "@/types";
 
-const ai = new AzureOpenAI({
-  endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
-  apiKey: process.env.AZURE_OPENAI_API_KEY || "",
-  apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
-});
-
 const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
+
+function getAzureOpenAIClient() {
+  return new AzureOpenAI({
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
+    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+  });
+}
 
 const JINA_BASE = "https://r.jina.ai/";
 const FETCH_TIMEOUT_MS = 12_000;
@@ -185,7 +187,7 @@ Return a JSON object with this exact shape:
 If a field cannot be determined from the data, set it to null or an empty array.
 Focus on personalization_hooks — these are the most important output.`;
 
-  const response = await ai.chat.completions.create({
+  const response = await getAzureOpenAIClient().chat.completions.create({
     model: deployment,
     messages: [
       { role: "system", content: systemInstruction },

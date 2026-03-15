@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -67,9 +68,7 @@ export function UploadDialog({ productId, onUploaded }: UploadDialogProps) {
         <DialogHeader>
           <DialogTitle>Upload Lead List</DialogTitle>
           <DialogDescription>
-            Upload a CSV or JSON file. Required columns: name, email. Any extra
-            columns (e.g. phone, linkedin_url) will appear as additional table
-            columns automatically.
+            Upload a CSV or JSON file. Required columns: name, email. Any extra columns (e.g. phone, linkedin_url) will appear as additional table columns automatically.
           </DialogDescription>
         </DialogHeader>
 

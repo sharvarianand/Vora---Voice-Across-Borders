@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -274,7 +275,7 @@ export default function CampaignsPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  {campaign.campaign_leads?.[0]?.count ?? 0} leads assigned
+                  {`${campaign.campaign_leads?.[0]?.count ?? 0} leads assigned`}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Created {new Date(campaign.created_at).toLocaleDateString()}
@@ -290,8 +291,7 @@ export default function CampaignsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete campaign</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete <strong>{deleteTarget?.name}</strong> and
-              all its associated leads. This action cannot be undone.
+              This will permanently delete <strong>{deleteTarget?.name}</strong> and all its associated leads. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

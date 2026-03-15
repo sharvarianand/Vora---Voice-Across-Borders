@@ -153,7 +153,11 @@ export async function POST(request: NextRequest) {
     .select();
 
   if (error && error.message.includes("custom_fields")) {
-    const fallback = leadsToInsert.map(({ custom_fields: _cf, ...rest }) => rest);
+    const fallback = leadsToInsert.map((lead) => {
+      const { custom_fields, ...rest } = lead;
+      void custom_fields;
+      return rest;
+    });
     ({ data, error } = await supabase
       .from("leads")
       .upsert(fallback, { onConflict: "product_id,email" })
@@ -170,4 +174,3 @@ export async function POST(request: NextRequest) {
     ids: data!.map((r: { id: string }) => r.id),
   });
 }
-

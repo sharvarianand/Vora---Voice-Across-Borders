@@ -2,13 +2,15 @@ import { AzureOpenAI } from "openai";
 import Exa from "exa-js";
 import type { Product } from "@/types";
 
-const ai = new AzureOpenAI({
-  endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
-  apiKey: process.env.AZURE_OPENAI_API_KEY || "",
-  apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
-});
-
 const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
+
+function getAzureOpenAIClient() {
+  return new AzureOpenAI({
+    endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
+    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
+    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+  });
+}
 
 export interface CandidateLead {
   name: string;
@@ -17,6 +19,13 @@ export interface CandidateLead {
   industry: string | null;
   job_title: string | null;
   source_url: string | null;
+}
+
+interface ExaSearchResult {
+  title?: string | null;
+  url?: string | null;
+  text?: string | null;
+  highlights?: string[] | null;
 }
 
 export async function findLeads(
@@ -53,7 +62,10 @@ export async function findLeads(
     }
 
     const searchContext = exaResults.results
-      .map((r: any) => `**${r.title}** (${r.url})\n${r.highlights?.join("\n") || r.text || ""}`)
+      .map((r) => {
+        const result = r as ExaSearchResult;
+        return `**${result.title || "Untitled"}** (${result.url || ""})\n${result.highlights?.join("\n") || result.text || ""}`;
+      })
       .join("\n\n---\n\n");
 
     const systemInstruction = `You are a B2B lead extraction assistant. Given web search results, extract individual people who could be sales leads.
@@ -82,7 +94,7 @@ Rules:
 - If no relevant leads are found, return { "leads": [] }
 - Do not hallucinate data — only extract what is present in the search results`;
 
-    const response = await ai.chat.completions.create({
+    const response = await getAzureOpenAIClient().chat.completions.create({
       model: deployment,
       messages: [
         { role: "system", content: systemInstruction },

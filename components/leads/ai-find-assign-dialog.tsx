@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+
 import { Sparkles, Loader2, ExternalLink, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -102,7 +103,6 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
     const toAdd = candidates.filter((_, i) => selectedIndices.has(i));
     if (toAdd.length === 0) return;
     setProcessing(true);
-    let added = 0;
     let assigned = 0;
     const errors: string[] = [];
 
@@ -131,8 +131,6 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
           throw new Error(err.error || "Failed to create lead");
         }
         const createdLead = await leadRes.json();
-        added++;
-
         const assignRes = await fetch(`/api/campaigns/${campaignId}/leads`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -153,11 +151,11 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
     setProcessing(false);
 
     if (assigned > 0) {
-      toast.success(`Found and assigned ${assigned} lead${assigned !== 1 ? "s" : ""} to campaign`);
+      toast.success(`Found and assigned ${assigned} leads to campaign`);
       onAssigned();
     }
     if (errors.length > 0) {
-      toast.error(`${errors.length} lead${errors.length !== 1 ? "s" : ""} failed`);
+      toast.error(`${errors.length} leads failed`);
     }
 
     setOpen(false);
@@ -178,8 +176,8 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
               AI Find & Assign Leads
             </DialogTitle>
             <DialogDescription>
-              Describe the leads you want in natural language. We&apos;ll find them and
-              automatically assign them to this campaign.
+              Describe the leads you want in natural language. We&apos;ll find
+              them and automatically assign them to this campaign.
             </DialogDescription>
           </DialogHeader>
 
@@ -196,8 +194,7 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
                 disabled={searching}
               />
               <p className="text-xs text-muted-foreground">
-                Be specific about roles, industries, company size, and location.
-                Press ⌘↵ to search.
+                Be specific about roles, industries, company size, and location. Press ⌘↵ to search.
               </p>
               <Button
                 onClick={handleSearch}
@@ -231,7 +228,7 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
                   <span className="text-sm text-muted-foreground">
                     {candidates.length === 0
                       ? "No leads found"
-                      : `${candidates.length} lead${candidates.length !== 1 ? "s" : ""} found`}
+                      : `${candidates.length} leads found`}
                   </span>
                   {candidates.length > 0 && (
                     <Button variant="ghost" size="sm" className="h-7 px-2 text-xs" onClick={toggleAll}>
@@ -313,7 +310,7 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
               {candidates.length > 0 && (
                 <div className="flex items-center justify-between pt-1">
                   <span className="text-sm text-muted-foreground">
-                    {selectedIndices.size} selected
+                    {`${selectedIndices.size} selected`}
                   </span>
                   <Button
                     onClick={handleFindAndAssign}
@@ -327,7 +324,7 @@ export function AiFindAssignDialog({ productId, campaignId, onAssigned }: AiFind
                     )}
                     {processing
                       ? "Processing…"
-                      : `Find & Assign ${selectedIndices.size} lead${selectedIndices.size !== 1 ? "s" : ""}`}
+                      : `Find & Assign ${selectedIndices.size} leads`}
                   </Button>
                 </div>
               )}

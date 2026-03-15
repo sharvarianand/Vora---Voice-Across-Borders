@@ -4,6 +4,7 @@ import { type CSSProperties, type ReactNode, useState, useEffect, useRef } from 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SignIn, SignUp, useAuth } from "@clerk/nextjs";
+
 import {
   Dialog,
   DialogContent,
@@ -81,8 +82,7 @@ export function LandingAuthButton({
                   {view === "sign-in" ? "Welcome back" : "Create your workspace"}
                 </DialogTitle>
                 <DialogDescription className="max-w-sm text-sm leading-6 text-[#f5eded]/65">
-                  Authenticate without leaving the landing page. The auth panel is styled to match
-                  the same dark product surface used across Vora.
+                  Authenticate without leaving the landing page. The auth panel is styled to match the same dark product surface used across Vora.
                 </DialogDescription>
               </DialogHeader>
             </div>
@@ -91,8 +91,7 @@ export function LandingAuthButton({
               <div className="rounded-2xl border border-white/8 bg-black/20 p-4">
                 <div className="mb-2 text-sm font-medium text-[#f5eded]">Why this flow</div>
                 <p className="text-sm leading-6 text-[#f5eded]/60">
-                  No auth route jump, no full-page context switch. Users stay on the page and move
-                  into the dashboard only after authentication succeeds.
+                  No auth route jump, no full-page context switch. Users stay on the page and move into the dashboard only after authentication succeeds.
                 </p>
               </div>
 

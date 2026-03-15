@@ -44,28 +44,6 @@ import type { Campaign } from "@/types";
 
 type View = "workflow" | "leads" | "analytics" | "automation" | "inbox" | "settings";
 
-// ─── Node palette items & sidebar nav ────────────────────────────────────────
-
-const nodeItems = [
-  { type: "start", label: "Start", icon: Play, color: "text-green-600 bg-green-100" },
-  { type: "send_email", label: "Send Email", icon: Mail, color: "text-blue-600 bg-blue-100" },
-  { type: "send_whatsapp", label: "Send WhatsApp", icon: MessageCircle, color: "text-teal-600 bg-teal-100" },
-  { type: "wait", label: "Wait / Delay", icon: Clock, color: "text-amber-600 bg-amber-100" },
-  { type: "condition", label: "If / Else", icon: GitBranch, color: "text-purple-600 bg-purple-100" },
-  { type: "auto_reply", label: "Auto Reply", icon: MessageSquareReply, color: "text-teal-600 bg-teal-100" },
-  { type: "end", label: "End", icon: Square, color: "text-red-600 bg-red-100" },
-];
-
-const sidebarNav: { view: View; label: string; icon: React.ElementType }[] = [
-  { view: "workflow", label: "Workflow Editor", icon: Workflow },
-  { view: "leads", label: "Leads", icon: Users },
-  { view: "analytics", label: "Analytics", icon: BarChart3 },
-  { view: "automation", label: "Automation", icon: BrainCircuit },
-  { view: "inbox", label: "Inbox", icon: Inbox },
-];
-
-// ─── Main builder ─────────────────────────────────────────────────────────────
-
 function BuilderInner() {
   const params = useParams();
   const router = useRouter();
@@ -79,6 +57,24 @@ function BuilderInner() {
   const [rateLimitValue, setRateLimitValue] = useState<string>("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+
+  const nodeItems = [
+    { type: "start", label: "Start", icon: Play, color: "text-green-600 bg-green-100" },
+    { type: "send_email", label: "Send Email", icon: Mail, color: "text-blue-600 bg-blue-100" },
+    { type: "send_whatsapp", label: "Send WhatsApp", icon: MessageCircle, color: "text-teal-600 bg-teal-100" },
+    { type: "wait", label: "Wait / Delay", icon: Clock, color: "text-amber-600 bg-amber-100" },
+    { type: "condition", label: "If / Else", icon: GitBranch, color: "text-purple-600 bg-purple-100" },
+    { type: "auto_reply", label: "Auto Reply", icon: MessageSquareReply, color: "text-teal-600 bg-teal-100" },
+    { type: "end", label: "End", icon: Square, color: "text-red-600 bg-red-100" },
+  ];
+
+  const sidebarNav: { view: View; label: string; icon: React.ElementType }[] = [
+    { view: "workflow", label: "Workflow Editor", icon: Workflow },
+    { view: "leads", label: "Leads", icon: Users },
+    { view: "analytics", label: "Analytics", icon: BarChart3 },
+    { view: "automation", label: "Automation", icon: BrainCircuit },
+    { view: "inbox", label: "Inbox", icon: Inbox },
+  ];
 
   const {
     nodes,
@@ -316,8 +312,7 @@ function BuilderInner() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Activate Campaign?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      This will start processing the workflow for all assigned leads. Make sure
-                      you have assigned leads before activating. The workflow will be auto-saved.
+                      This will start processing the workflow for all assigned leads. Make sure you have assigned leads before activating. The workflow will be auto-saved.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
@@ -531,7 +526,6 @@ function BuilderInner() {
                     </Button>
                   </div>
                 </div>
-                {/* Status */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Status</label>
                   <div>
