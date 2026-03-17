@@ -5,6 +5,7 @@ import gsap from "gsap";
 import useIsomorphicLayoutEffect from "@/hooks/useIsomorphicLayoutEffect";
 import Image from "next/image";
 import { LandingAuthButton } from "@/components/auth/landing-auth-button";
+import { LocaleSwitcher } from "@/components/locale/locale-switcher";
 
 export default function Navbar() {
    const navRef = useRef<HTMLElement>(null);
@@ -120,7 +121,9 @@ export default function Navbar() {
             ))}
          </div>
 
-          {/* CTA Button */}
+         <LocaleSwitcher />
+
+         {/* CTA Button */}
           <LandingAuthButton
              style={{
                 padding: "0.5rem 1.25rem",
