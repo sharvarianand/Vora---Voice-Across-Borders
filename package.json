@@ -45,6 +45,7 @@
   "devDependencies": {
     "@hapi/boom": "^10.0.1",
     "@tailwindcss/postcss": "^4",
+    "@types/aws-lambda": "^8.10.161",
     "@types/node": "^20",
     "@types/papaparse": "^5.5.2",
     "@types/qrcode": "^1.5.6",

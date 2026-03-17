@@ -10,13 +10,13 @@ importers:
     dependencies:
       '@clerk/nextjs':
         specifier: ^7.0.4
-        version: 7.0.4(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 7.0.4(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.14.2)(react@19.2.3)
       '@lingo.dev/compiler':
         specifier: ^0.4.0
-        version: 0.4.0(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod@3.25.76)
+        version: 0.4.0(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod@4.1.12)
       '@supabase/ssr':
         specifier: ^0.9.0
         version: 0.9.0(@supabase/supabase-js@2.98.0)
@@ -55,7 +55,7 @@ importers:
         version: 1.3.18(react@19.2.3)
       lingo.dev:
         specifier: ^0.133.2
-        version: 0.133.2(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+        version: 0.133.2(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       lucide-react:
         specifier: ^0.577.0
         version: 0.577.0(react@19.2.3)
@@ -64,13 +64,13 @@ importers:
         version: 5.1.6
       next:
         specifier: 16.1.6
-        version: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       openai:
         specifier: ^6.29.0
-        version: 6.29.0(ws@8.19.0)(zod@3.25.76)
+        version: 6.29.0(ws@8.19.0)(zod@4.1.12)
       papaparse:
         specifier: ^5.5.3
         version: 5.5.3
@@ -105,6 +105,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.1
+      '@types/aws-lambda':
+        specifier: ^8.10.161
+        version: 8.10.161
       '@types/node':
         specifier: ^20
         version: 20.19.37
@@ -6467,18 +6470,18 @@ snapshots:
       '@vercel/oidc': 3.1.0
       zod: 4.1.12
 
-  '@ai-sdk/gateway@3.0.2(zod@3.25.76)':
+  '@ai-sdk/gateway@3.0.2(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.1.12)
       '@vercel/oidc': 3.0.5
-      zod: 3.25.76
+      zod: 4.1.12
 
-  '@ai-sdk/google@3.0.1(zod@3.25.76)':
+  '@ai-sdk/google@3.0.1(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.1.12)
+      zod: 4.1.12
 
   '@ai-sdk/google@3.0.6(zod@4.1.12)':
     dependencies:
@@ -6486,11 +6489,11 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.4(zod@4.1.12)
       zod: 4.1.12
 
-  '@ai-sdk/groq@3.0.1(zod@3.25.76)':
+  '@ai-sdk/groq@3.0.1(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.1.12)
+      zod: 4.1.12
 
   '@ai-sdk/groq@3.0.4(zod@4.1.12)':
     dependencies:
@@ -6498,11 +6501,11 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.4(zod@4.1.12)
       zod: 4.1.12
 
-  '@ai-sdk/mistral@3.0.1(zod@3.25.76)':
+  '@ai-sdk/mistral@3.0.1(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.1.12)
+      zod: 4.1.12
 
   '@ai-sdk/mistral@3.0.5(zod@4.1.12)':
     dependencies:
@@ -6510,11 +6513,11 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.4(zod@4.1.12)
       zod: 4.1.12
 
-  '@ai-sdk/openai@3.0.1(zod@3.25.76)':
+  '@ai-sdk/openai@3.0.1(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
-      zod: 3.25.76
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.1.12)
+      zod: 4.1.12
 
   '@ai-sdk/openai@3.0.7(zod@4.1.12)':
     dependencies:
@@ -6522,19 +6525,12 @@ snapshots:
       '@ai-sdk/provider-utils': 4.0.4(zod@4.1.12)
       zod: 4.1.12
 
-  '@ai-sdk/provider-utils@4.0.1(zod@3.25.76)':
+  '@ai-sdk/provider-utils@4.0.1(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.0.6
-      zod: 3.25.76
-
-  '@ai-sdk/provider-utils@4.0.19(zod@3.25.76)':
-    dependencies:
-      '@ai-sdk/provider': 3.0.8
-      '@standard-schema/spec': 1.1.0
-      eventsource-parser: 3.0.6
-      zod: 3.25.76
+      zod: 4.1.12
 
   '@ai-sdk/provider-utils@4.0.19(zod@4.1.12)':
     dependencies:
@@ -6964,12 +6960,12 @@ snapshots:
       - react
       - react-dom
 
-  '@clerk/nextjs@7.0.4(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@clerk/nextjs@7.0.4(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@clerk/backend': 3.2.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@clerk/react': 6.1.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@clerk/shared': 4.3.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      next: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
       server-only: 0.0.1
@@ -7509,11 +7505,11 @@ snapshots:
     dependencies:
       iso-639-3: 3.0.1
 
-  '@lingo.dev/_react@0.7.6(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
+  '@lingo.dev/_react@0.7.6(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))':
     dependencies:
       js-cookie: 3.0.5
       lodash: 4.17.21
-      next: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
   '@lingo.dev/_sdk@0.16.0':
     dependencies:
@@ -7533,12 +7529,12 @@ snapshots:
       '@lingo.dev/_locales': 0.3.3
       zod: 4.1.12
 
-  '@lingo.dev/compiler@0.4.0(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod@3.25.76)':
+  '@lingo.dev/compiler@0.4.0(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/google': 3.0.1(zod@3.25.76)
-      '@ai-sdk/groq': 3.0.1(zod@3.25.76)
-      '@ai-sdk/mistral': 3.0.1(zod@3.25.76)
-      '@ai-sdk/openai': 3.0.1(zod@3.25.76)
+      '@ai-sdk/google': 3.0.1(zod@4.1.12)
+      '@ai-sdk/groq': 3.0.1(zod@4.1.12)
+      '@ai-sdk/mistral': 3.0.1(zod@4.1.12)
+      '@ai-sdk/openai': 3.0.1(zod@4.1.12)
       '@babel/core': 7.26.0
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -7547,14 +7543,14 @@ snapshots:
       '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
       '@formatjs/icu-messageformat-parser': 3.1.1
-      '@openrouter/ai-sdk-provider': 1.5.4(ai@6.0.3(zod@3.25.76))(zod@3.25.76)
-      ai: 6.0.3(zod@3.25.76)
-      ai-sdk-ollama: 3.0.0(ai@6.0.3(zod@3.25.76))(zod@3.25.76)
+      '@openrouter/ai-sdk-provider': 1.5.4(ai@6.0.3(zod@4.1.12))(zod@4.1.12)
+      ai: 6.0.3(zod@4.1.12)
+      ai-sdk-ollama: 3.0.0(ai@6.0.3(zod@4.1.12))(zod@4.1.12)
       dotenv: 17.2.3
       fast-xml-parser: 5.3.3
       ini: 5.0.0
       intl-messageformat: 11.0.6
-      lingo.dev: 0.133.2(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      lingo.dev: 0.133.2(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       lmdb: 3.2.6
       lodash: 4.17.21
       node-machine-id: 1.1.12
@@ -7563,7 +7559,7 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       ws: 8.18.3
     optionalDependencies:
-      next: 16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     transitivePeerDependencies:
       - '@biomejs/wasm-bundler'
       - '@biomejs/wasm-web'
@@ -7897,11 +7893,11 @@ snapshots:
 
   '@open-draft/until@2.1.0': {}
 
-  '@openrouter/ai-sdk-provider@1.5.4(ai@6.0.3(zod@3.25.76))(zod@3.25.76)':
+  '@openrouter/ai-sdk-provider@1.5.4(ai@6.0.3(zod@4.1.12))(zod@4.1.12)':
     dependencies:
       '@openrouter/sdk': 0.1.27
-      ai: 6.0.3(zod@3.25.76)
-      zod: 3.25.76
+      ai: 6.0.3(zod@4.1.12)
+      zod: 4.1.12
 
   '@openrouter/ai-sdk-provider@6.0.0-alpha.1(zod@4.1.12)':
     dependencies:
@@ -9218,11 +9214,11 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai-sdk-ollama@3.0.0(ai@6.0.3(zod@3.25.76))(zod@3.25.76):
+  ai-sdk-ollama@3.0.0(ai@6.0.3(zod@4.1.12))(zod@4.1.12):
     dependencies:
       '@ai-sdk/provider': 3.0.8
-      '@ai-sdk/provider-utils': 4.0.19(zod@3.25.76)
-      ai: 6.0.3(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.19(zod@4.1.12)
+      ai: 6.0.3(zod@4.1.12)
       ollama: 0.6.3
     transitivePeerDependencies:
       - zod
@@ -9235,13 +9231,13 @@ snapshots:
       '@opentelemetry/api': 1.9.0
       zod: 4.1.12
 
-  ai@6.0.3(zod@3.25.76):
+  ai@6.0.3(zod@4.1.12):
     dependencies:
-      '@ai-sdk/gateway': 3.0.2(zod@3.25.76)
+      '@ai-sdk/gateway': 3.0.2(zod@4.1.12)
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.1(zod@3.25.76)
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.1.12)
       '@opentelemetry/api': 1.9.0
-      zod: 3.25.76
+      zod: 4.1.12
 
   ajv-formats@3.0.1(ajv@8.18.0):
     optionalDependencies:
@@ -11371,7 +11367,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  lingo.dev@0.133.2(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)):
+  lingo.dev@0.133.2(@types/node@20.19.37)(@types/react@19.2.14)(encoding@0.1.13)(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)):
     dependencies:
       '@ai-sdk/anthropic': 3.0.9(zod@4.1.12)
       '@ai-sdk/google': 3.0.6(zod@4.1.12)
@@ -11389,7 +11385,7 @@ snapshots:
       '@inquirer/prompts': 7.8.0(@types/node@20.19.37)
       '@lingo.dev/_compiler': 0.12.0
       '@lingo.dev/_locales': 0.3.3
-      '@lingo.dev/_react': 0.7.6(next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
+      '@lingo.dev/_react': 0.7.6(next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@lingo.dev/_sdk': 0.16.0
       '@lingo.dev/_spec': 0.49.0
       '@markdoc/markdoc': 0.5.4(@types/react@19.2.14)(react@19.2.3)
@@ -12136,7 +12132,7 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  next@16.1.6(@babel/core@7.29.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  next@16.1.6(@babel/core@7.26.0)(@opentelemetry/api@1.9.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@next/env': 16.1.6
       '@swc/helpers': 0.5.15
@@ -12145,7 +12141,7 @@ snapshots:
       postcss: 8.4.31
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.3)
+      styled-jsx: 5.1.6(@babel/core@7.26.0)(react@19.2.3)
     optionalDependencies:
       '@next/swc-darwin-arm64': 16.1.6
       '@next/swc-darwin-x64': 16.1.6
@@ -12316,10 +12312,10 @@ snapshots:
       ws: 8.19.0
       zod: 3.25.76
 
-  openai@6.29.0(ws@8.19.0)(zod@3.25.76):
+  openai@6.29.0(ws@8.19.0)(zod@4.1.12):
     optionalDependencies:
       ws: 8.19.0
-      zod: 3.25.76
+      zod: 4.1.12
 
   optionator@0.9.4:
     dependencies:
@@ -13333,12 +13329,12 @@ snapshots:
       '@tokenizer/token': 0.3.0
       peek-readable: 4.1.0
 
-  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.3):
+  styled-jsx@5.1.6(@babel/core@7.26.0)(react@19.2.3):
     dependencies:
       client-only: 0.0.1
       react: 19.2.3
     optionalDependencies:
-      '@babel/core': 7.29.0
+      '@babel/core': 7.26.0
 
   supports-color@7.2.0:
     dependencies:
