@@ -9,91 +9,136 @@ if (typeof window !== "undefined") {
    gsap.registerPlugin(ScrollTrigger);
 }
 
-const features = [
-   {
-      number: "01",
-      title: "Campaign Brain",
-      subtitle: "Describe your goal. Vora builds the workflow.",
-      body: 'Type "Warm up 50 SaaS CTOs over 5 days" and Campaign Brain generates a complete multi-step outreach workflow — nodes, delays, branches, and all.',
-      tag: "Natural Language → Workflow",
-      accent: "var(--accent-primary)",
-      visual: "campaign-brain" as const,
-   },
-   {
-      number: "02",
-      title: "Persona Intelligence",
-      subtitle: "Every message shaped by personality, never templates.",
-      body: "Vora enriches each lead with Crystal DISC data (D, I, S, or C) and writes messages in the style each buyer naturally responds to.",
-      tag: "Crystal · DISC Profiles",
-      accent: "var(--accent-secondary)",
-      visual: "persona" as const,
-   },
-   {
-      number: "03",
-      title: "Circadian Timing",
-      subtitle: "Sent when your lead is most likely to open it.",
-      body: "Vora analyzes each lead's historical email engagement timestamps and calculates their personal optimal send window.",
-      tag: "Per-Lead Timing Engine",
-      accent: "var(--accent-primary)",
-      visual: "timing" as const,
-   },
-   {
-      number: "04",
-      title: "Ghost Detector",
-      subtitle: "Silence isn't the end. It's a signal.",
-      body: "When a lead goes dark, Vora diagnoses why — bad timing, tone mismatch, spam filters — and generates a completely new re-engagement strategy.",
-      tag: "AI Silence Analysis",
-      accent: "var(--accent-secondary)",
-      visual: "ghost" as const,
-   },
-   {
-      number: "05",
-      title: "Human Handoff Intelligence",
-      subtitle: "When it's time for a human, they can't possibly fail.",
-      body: "When a lead's readiness score crosses 70, Vora hands off with a complete AI call brief — personality summary, objections, and recommended opener.",
-      tag: "Readiness Score · Call Brief",
-      accent: "var(--accent-secondary)",
-      visual: "handoff" as const,
-   },
-   {
-      number: "06",
-      title: "Committee Mapper",
-      subtitle: "Refine leads using existing account intelligence.",
-      body: "Vora maps decision makers, influencers, and blockers from existing lead history so your campaign targets the full buying committee instead of a single contact.",
-      tag: "Buying Committee Intelligence",
-      accent: "var(--accent-primary)",
-      visual: "committee" as const,
-   },
-   {
-      number: "07",
-      title: "Objection Pre-loader",
-      subtitle: "Predict objections before the first reply lands.",
-      body: "Based on persona, role, and campaign context, Vora forecasts likely objections and pre-loads AI-generated responses so reps can answer in seconds.",
-      tag: "Predictive Reply Library",
-      accent: "var(--accent-secondary)",
-      visual: "objection" as const,
-   },
-   {
-      number: "08",
-      title: "ROI Simulator",
-      subtitle: "See outcome scenarios before you launch.",
-      body: "Run expected-send, open, reply, and meeting projections with adjustable assumptions to understand campaign upside and risk before a single email goes out.",
-      tag: "Pre-Launch Forecasting",
-      accent: "var(--accent-primary)",
-      visual: "roi" as const,
-   },
-   {
-      number: "09",
-      title: "Link Engagement Tracker",
-      subtitle: "Turn clicks into insights in real time.",
-      body: "Measure every interaction across your outreach links, spot high-intent behavior instantly, and prioritize leads based on true engagement signals.",
-      tag: "Real-Time Click Intelligence",
-      accent: "var(--accent-secondary)",
-      visual: "link-engagement" as const,
-   },
-];
-
 export default function FeaturesSection() {
+   const features = [
+      {
+         number: "01",
+         title: <>Campaign Brain</>,
+         subtitle: <>Describe your goal. Vora builds the workflow.</>,
+         body: (
+            <>
+               Type &quot;Warm up 50 SaaS CTOs over 5 days&quot; and Campaign Brain generates a complete multi-step
+               outreach workflow — nodes, delays, branches, and all.
+            </>
+         ),
+         tag: <>Natural Language → Workflow</>,
+         accent: "var(--accent-primary)",
+         visual: "campaign-brain" as const,
+      },
+      {
+         number: "02",
+         title: <>Persona Intelligence</>,
+         subtitle: <>Every message shaped by personality, never templates.</>,
+         body: (
+            <>
+               Vora enriches each lead with Crystal DISC data (D, I, S, or C) and writes messages in the style each
+               buyer naturally responds to.
+            </>
+         ),
+         tag: <>Crystal · DISC Profiles</>,
+         accent: "var(--accent-secondary)",
+         visual: "persona" as const,
+      },
+      {
+         number: "03",
+         title: <>Circadian Timing</>,
+         subtitle: <>Sent when your lead is most likely to open it.</>,
+         body: (
+            <>
+               Vora analyzes each lead&apos;s historical email engagement timestamps and calculates their personal
+               optimal send window.
+            </>
+         ),
+         tag: <>Per-Lead Timing Engine</>,
+         accent: "var(--accent-primary)",
+         visual: "timing" as const,
+      },
+      {
+         number: "04",
+         title: <>Ghost Detector</>,
+         subtitle: <>Silence isn&apos;t the end. It&apos;s a signal.</>,
+         body: (
+            <>
+               When a lead goes dark, Vora diagnoses why — bad timing, tone mismatch, spam filters — and generates a
+               completely new re-engagement strategy.
+            </>
+         ),
+         tag: <>AI Silence Analysis</>,
+         accent: "var(--accent-secondary)",
+         visual: "ghost" as const,
+      },
+      {
+         number: "05",
+         title: <>Human Handoff Intelligence</>,
+         subtitle: <>When it&apos;s time for a human, they can&apos;t possibly fail.</>,
+         body: (
+            <>
+               When a lead&apos;s readiness score crosses 70, Vora hands off with a complete AI call brief — personality
+               summary, objections, and recommended opener.
+            </>
+         ),
+         tag: <>Readiness Score · Call Brief</>,
+         accent: "var(--accent-secondary)",
+         visual: "handoff" as const,
+      },
+      {
+         number: "06",
+         title: <>Committee Mapper</>,
+         subtitle: <>Refine leads using existing account intelligence.</>,
+         body: (
+            <>
+               Vora maps decision makers, influencers, and blockers from existing lead history so your campaign targets
+               the full buying committee instead of a single contact.
+            </>
+         ),
+         tag: <>Buying Committee Intelligence</>,
+         accent: "var(--accent-primary)",
+         visual: "committee" as const,
+      },
+      {
+         number: "07",
+         title: <>Objection Pre-loader</>,
+         subtitle: <>Predict objections before the first reply lands.</>,
+         body: (
+            <>
+               Based on persona, role, and campaign context, Vora forecasts likely objections and pre-loads AI-generated
+               responses so reps can answer in seconds.
+            </>
+         ),
+         tag: <>Predictive Reply Library</>,
+         accent: "var(--accent-secondary)",
+         visual: "objection" as const,
+      },
+      {
+         number: "08",
+         title: <>ROI Simulator</>,
+         subtitle: <>See outcome scenarios before you launch.</>,
+         body: (
+            <>
+               Run expected-send, open, reply, and meeting projections with adjustable assumptions to understand
+               campaign upside and risk before a single email goes out.
+            </>
+         ),
+         tag: <>Pre-Launch Forecasting</>,
+         accent: "var(--accent-primary)",
+         visual: "roi" as const,
+      },
+      {
+         number: "09",
+         title: <>Link Engagement Tracker</>,
+         subtitle: <>Turn clicks into insights in real time.</>,
+         body: (
+            <>
+               Measure every interaction across your outreach links, spot high-intent behavior instantly, and
+               prioritize leads based on true engagement signals.
+            </>
+         ),
+         tag: <>Real-Time Click Intelligence</>,
+         accent: "var(--accent-secondary)",
+         visual: "link-engagement" as const,
+      },
+   ];
+
    const sectionRef = useRef<HTMLElement>(null);
    const headerRef = useRef<HTMLDivElement>(null);
    const cardsTrackRef = useRef<HTMLDivElement>(null);
@@ -146,7 +191,7 @@ export default function FeaturesSection() {
          const scrollRange = 1 - introPhase;
          const featureSegment = scrollRange / totalFeatures;
 
-         features.forEach((_, i) => {
+         for (let i = 0; i < totalFeatures; i++) {
             const featureEl = sticky.querySelector(`[data-feature="${i}"]`) as HTMLElement;
             if (!featureEl) return;
 
@@ -190,7 +235,7 @@ export default function FeaturesSection() {
                   },
                });
             }
-         });
+         }
 
          gsap.to(header, {
             opacity: 0,

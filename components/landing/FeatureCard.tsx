@@ -1,11 +1,13 @@
 "use client";
 
+import type { ReactNode } from "react";
+
 interface Feature {
    number: string;
-   title: string;
-   subtitle: string;
-   body: string;
-   tag: string;
+   title: ReactNode;
+   subtitle: ReactNode;
+   body: ReactNode;
+   tag: ReactNode;
    accent: string;
    visual:
       | "campaign-brain"
@@ -139,7 +141,7 @@ function FeatureVisual({ feature }: { feature: Feature }) {
 
 /* ─── Campaign Brain ─── */
 function CampaignBrainVisual() {
-   const nodes = ["Start", "Message", "2-Day Delay", "If Replied?"];
+   const nodes: ReactNode[] = [<>Start</>, <>Message</>, <>2-Day Delay</>, <>If Replied?</>];
 
    return (
       <div
@@ -154,7 +156,7 @@ function CampaignBrainVisual() {
       >
          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap", justifyContent: "center" }}>
             {nodes.map((node, i) => (
-               <div key={node} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+               <div key={i} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <div
                      style={{
                         padding: "0.5rem 1rem",
@@ -193,10 +195,10 @@ function CampaignBrainVisual() {
 /* ─── Persona Visual ─── */
 function PersonaVisual() {
    const quads = [
-      { label: "D", desc: "Short · Direct · ROI-first", color: "var(--accent-primary)" },
-      { label: "I", desc: "Warm · Story-driven", color: "var(--accent-secondary)" },
-      { label: "S", desc: "Empathetic · Low-pressure", color: "var(--accent-secondary-dim)" },
-      { label: "C", desc: "Data-heavy · Structured", color: "var(--accent-primary-dim)" },
+      { label: "D", desc: <>Short · Direct · ROI-first</>, color: "var(--accent-primary)" },
+      { label: "I", desc: <>Warm · Story-driven</>, color: "var(--accent-secondary)" },
+      { label: "S", desc: <>Empathetic · Low-pressure</>, color: "var(--accent-secondary-dim)" },
+      { label: "C", desc: <>Data-heavy · Structured</>, color: "var(--accent-primary-dim)" },
    ];
 
    return (
