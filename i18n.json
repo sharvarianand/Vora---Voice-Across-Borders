@@ -1,0 +1,13 @@
+{
+  "version": "1.15",
+  "locale": {
+    "source": "en",
+    "targets": [
+      "es",
+      "fr",
+      "de",
+      "hi"
+    ]
+  },
+  "buckets": {}
+}

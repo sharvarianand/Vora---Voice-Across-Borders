@@ -7,18 +7,22 @@ const localeCookieName = "vora_locale";
 const hasLingoApiKey = Boolean(
   process.env.LINGODOTDEV_API_KEY || process.env.LINGO_API_KEY
 );
-const targetLocales =
-  process.env.NODE_ENV === "production" && !hasLingoApiKey
-    ? []
-    : configuredTargetLocales;
-const models =
-  process.env.NODE_ENV === "production" && !hasLingoApiKey ? {} : "lingo.dev";
-const buildMode =
-  process.env.NODE_ENV === "production" && !hasLingoApiKey
-    ? "cache-only"
-    : "translate";
+const isProduction = process.env.NODE_ENV === "production";
+
+// Always expose configured locales so production can serve cached translations
+// even when the API key is not available (buildMode: cache-only).
+const targetLocales = configuredTargetLocales;
+
+// Only use hosted model when an API key is available.
+const models = hasLingoApiKey ? "lingo.dev" : {};
+
+// In production without an API key we should rely on cached translations only.
+const buildMode = !hasLingoApiKey && isProduction ? "cache-only" : "translate";
+
+// Pseudotranslation is useful for local/dev without an API key, but should not
+// turn on automatically in production.
 const usePseudotranslator =
-  process.env.LINGO_USE_PSEUDOTRANSLATOR === "true" || !hasLingoApiKey;
+  process.env.LINGO_USE_PSEUDOTRANSLATOR === "true" || (!hasLingoApiKey && !isProduction);
 
 const nextConfig: NextConfig = {
   output: "standalone",
