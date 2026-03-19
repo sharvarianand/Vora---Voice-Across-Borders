@@ -1,8 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { normalizeLocale } from "@/lib/lingo";
+import { localizePlainText } from "@/lib/lingo-server";
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const supabase = await createClient();
@@ -18,7 +20,21 @@ export async function GET(
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
 
-  return NextResponse.json(data);
+  const targetLocale = normalizeLocale(
+    request.cookies.get("vora_locale")?.value ?? null
+  );
+
+  if (!targetLocale || targetLocale === "en") {
+    return NextResponse.json(data);
+  }
+
+  return NextResponse.json({
+    ...data,
+    name: await localizePlainText(String(data.name ?? ""), targetLocale),
+    description: data.description
+      ? await localizePlainText(String(data.description), targetLocale)
+      : null,
+  });
 }
 
 export async function PATCH(

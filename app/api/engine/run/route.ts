@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const workerSecret = process.env.WORKER_SECRET;
+  const isProduction = process.env.NODE_ENV === "production";
 
-  // Allow unauthenticated in dev, or check secret in production
-  if (workerSecret && authHeader !== `Bearer ${workerSecret}`) {
+  // Allow unauthenticated in dev mode, require secret in production
+  if (isProduction && workerSecret && authHeader !== `Bearer ${workerSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

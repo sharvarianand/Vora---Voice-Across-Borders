@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { normalizeLocale } from "@/lib/lingo";
+import { localizePlainText } from "@/lib/lingo-server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -14,7 +16,25 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json(data);
+    const targetLocale = normalizeLocale(
+      request.cookies.get("vora_locale")?.value ?? null
+    );
+
+    if (!targetLocale || targetLocale === "en" || !data?.length) {
+      return NextResponse.json(data ?? []);
+    }
+
+    const localized = await Promise.all(
+      data.map(async (product) => ({
+        ...product,
+        name: await localizePlainText(String(product.name ?? ""), targetLocale),
+        description: product.description
+          ? await localizePlainText(String(product.description), targetLocale)
+          : null,
+      }))
+    );
+
+    return NextResponse.json(localized);
   } catch (err) {
     console.error("GET /api/products exception:", err);
     return NextResponse.json({ error: String(err) }, { status: 500 });

@@ -17,10 +17,11 @@ import {
 import { ArrowLeft, Loader2, Package } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { productTemplates } from "@/lib/templates";
+import { getProductTemplates } from "@/lib/templates";
 
 export default function NewProductPage() {
-  const router = useRouter();
+   const productTemplates = getProductTemplates();
+   const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [creating, setCreating] = useState(false);

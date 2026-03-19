@@ -2,6 +2,10 @@ import { createClient } from "@/lib/supabase/server";
 import { syncCampaignReplyStatus } from "@/lib/reply-sync";
 import { NextRequest, NextResponse } from "next/server";
 
+import { cookies } from "next/headers";
+import { getLeadLocale, DEFAULT_LOCALE, getLocaleCookieName, normalizeLocale } from "@/lib/lingo";
+import { localizePlainText } from "@/lib/lingo-server";
+
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -24,7 +28,34 @@ export async function GET(
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  // ── Localization ─────────────────────────────────────────────────────
+  try {
+    const cookieStore = await cookies();
+    const userLocale = normalizeLocale(cookieStore.get(getLocaleCookieName())?.value) || DEFAULT_LOCALE;
+    
+    const localizedData = await Promise.all(
+      data.map(async (cl) => {
+        if (!cl.thread_subject) return cl;
+        
+        const leadLocale = getLeadLocale(cl.lead);
+        const msgOriginLocale = leadLocale || DEFAULT_LOCALE;
+        
+        if (msgOriginLocale !== userLocale) {
+          try {
+            const translatedSubject = await localizePlainText(cl.thread_subject, userLocale, msgOriginLocale);
+            return { ...cl, thread_subject: translatedSubject };
+          } catch (err) {
+            console.warn(`Failed to translate thread subject:`, err);
+          }
+        }
+        return cl;
+      })
+    );
+    return NextResponse.json(localizedData);
+  } catch (err) {
+    console.warn("Localization failed for leads list:", err);
+    return NextResponse.json(data);
+  }
 }
 
 export async function POST(

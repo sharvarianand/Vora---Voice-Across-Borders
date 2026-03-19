@@ -129,6 +129,10 @@ export async function GET(
   const emailsSkipped = allLogs.filter(
     (l) => l.action === "send_email" && l.status === "skipped"
   ).length;
+  const emailsFailed = allLogs.filter(
+    (l) => l.action === "error" && l.status === "failed"
+  ).length;
+  const emailsAttempted = emailsSent + emailsSkipped + emailsFailed;
   const replies = cls.filter((cl) => cl.replied).length;
   const replyRate = totalLeads > 0 ? (replies / totalLeads) * 100 : 0;
   const completed = cls.filter((cl) => cl.status === "completed").length;
@@ -312,6 +316,8 @@ export async function GET(
     totalLeads,
     emailsSent,
     emailsSkipped,
+    emailsFailed,
+    emailsAttempted,
     replies,
     replyRate: Math.round(replyRate * 10) / 10,
     completed,
