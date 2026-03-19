@@ -1,4 +1,4 @@
-import "server-only";
+
 
 import { LingoDotDevEngine } from "lingo.dev/sdk";
 import type { LocaleCode } from "lingo.dev/spec";
@@ -12,7 +12,8 @@ function getLingoEngine() {
   if (engine !== undefined) return engine;
 
   const apiKey = process.env.LINGO_API_KEY || process.env.LINGODOTDEV_API_KEY;
-  engine = apiKey ? new LingoDotDevEngine({ apiKey }) : null;
+  const engineId = process.env.LINGODOTDEV_ENGINE_ID;
+  engine = apiKey ? new LingoDotDevEngine({ apiKey, engineId }) : null;
   return engine;
 }
 
@@ -38,9 +39,10 @@ function restorePlaceholders(text: string, placeholders: string[]) {
 async function localizeTextInternal(
   text: string,
   targetLocale: LocaleCode,
-  kind: "text" | "html"
+  kind: "text" | "html",
+  sourceLocale: LocaleCode = DEFAULT_LOCALE
 ) {
-  if (!text.trim() || targetLocale === DEFAULT_LOCALE) {
+  if (!text.trim() || targetLocale === sourceLocale) {
     return text;
   }
 
@@ -55,12 +57,12 @@ async function localizeTextInternal(
     const localized =
       kind === "html"
         ? await lingo.localizeHtml(frozen, {
-            sourceLocale: DEFAULT_LOCALE,
+            sourceLocale,
             targetLocale,
             fast: true,
           })
         : await lingo.localizeText(frozen, {
-            sourceLocale: DEFAULT_LOCALE,
+            sourceLocale,
             targetLocale,
             fast: true,
           });
@@ -72,14 +74,22 @@ async function localizeTextInternal(
   }
 }
 
-export async function localizePlainText(text: string, targetLocale: LocaleCode | null | undefined) {
+export async function localizePlainText(
+  text: string,
+  targetLocale: LocaleCode | null | undefined,
+  sourceLocale?: LocaleCode
+) {
   if (!targetLocale) return text;
-  return localizeTextInternal(text, targetLocale, "text");
+  return localizeTextInternal(text, targetLocale, "text", sourceLocale);
 }
 
-export async function localizeHtmlText(text: string, targetLocale: LocaleCode | null | undefined) {
+export async function localizeHtmlText(
+  text: string,
+  targetLocale: LocaleCode | null | undefined,
+  sourceLocale?: LocaleCode
+) {
   if (!targetLocale) return text;
-  return localizeTextInternal(text, targetLocale, "html");
+  return localizeTextInternal(text, targetLocale, "html", sourceLocale);
 }
 
 export async function localizeEmailContent(
@@ -92,7 +102,7 @@ export async function localizeEmailContent(
 
   const [subject, body] = await Promise.all([
     localizePlainText(content.subject, targetLocale),
-    localizePlainText(content.body, targetLocale),
+    localizeHtmlText(content.body, targetLocale),
   ]);
 
   return { subject, body };
