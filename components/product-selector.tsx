@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 import {
   Select,
   SelectContent,
@@ -16,14 +17,16 @@ export function ProductSelector() {
   const router = useRouter();
   const params = useParams();
   const productId = params?.productId as string | undefined;
+  const { locale } = useLingoContext();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
+    if (!locale) return;
     fetch("/api/products")
       .then((r) => r.json())
       .then(setProducts)
       .catch(console.error);
-  }, []);
+  }, [locale]);
 
   return (
     <Select

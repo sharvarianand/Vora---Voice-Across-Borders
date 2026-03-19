@@ -4,6 +4,7 @@ import type { LucideIcon } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Handle, Position, NodeToolbar, useReactFlow } from "@xyflow/react";
 import { cn } from "@/lib/utils";
+import type { ReactNode } from "react";
 
 type Accent = "emerald" | "blue" | "amber" | "violet" | "rose" | "teal";
 
@@ -117,10 +118,10 @@ const accentStyles: Record<
 interface NodeShellProps {
   accent: Accent;
   icon: LucideIcon;
-  eyebrow: string;
-  title: string;
-  description?: string;
-  badge?: string;
+  eyebrow: ReactNode;
+  title: ReactNode;
+  description?: ReactNode;
+  badge?: ReactNode;
   children?: React.ReactNode;
   className?: string;
   minWidthClassName?: string;

@@ -265,7 +265,7 @@ export function LeadsTable({
             <AlertDialogTitle>Delete lead</AlertDialogTitle>
             <AlertDialogDescription>
               This will permanently delete{" "}
-              <strong>{deleteTarget?.name}</strong> ({deleteTarget?.email}) and
+              <strong>{deleteTarget?.name ?? ""}</strong> ({deleteTarget?.email ?? ""}) and
               remove them from any campaigns. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>

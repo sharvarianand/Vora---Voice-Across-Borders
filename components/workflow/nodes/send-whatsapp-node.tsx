@@ -89,18 +89,23 @@ function SendWhatsAppNodeComponent({ id, data, selected }: NodeProps<SendWhatsAp
           Generation Mode
         </p>
         <div className="flex gap-1.5">
-          {(["personalized", "same_for_all"] as const).map((m) => (
+          {(
+            [
+              { key: "personalized" as const, label: <>Personalized</> },
+              { key: "same_for_all" as const, label: <>Same for all</> },
+            ] as const
+          ).map((opt) => (
             <button
-              key={m}
-              onClick={() => handleModeChange(m)}
+              key={opt.key}
+              onClick={() => handleModeChange(opt.key)}
               className={[
                 "flex-1 rounded-md border px-2 py-1 text-[11px] font-medium transition-colors",
-                mode === m
+                mode === opt.key
                   ? "border-teal-400 bg-teal-50 text-teal-700 dark:border-teal-700 dark:bg-teal-950/40 dark:text-teal-300"
                   : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400",
               ].join(" ")}
             >
-              {m === "personalized" ? "Personalized" : "Same for all"}
+              {opt.label}
             </button>
           ))}
         </div>
