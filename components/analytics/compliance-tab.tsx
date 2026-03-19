@@ -19,7 +19,7 @@ export function ComplianceTab({ compliance }: ComplianceTabProps) {
   if (!compliance) {
     return (
       <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
-        Unable to load compliance data
+        <>Unable to load compliance data</>
       </div>
     );
   }
@@ -29,25 +29,29 @@ export function ComplianceTab({ compliance }: ComplianceTabProps) {
 
   const metrics = [
     {
-      label: "Total Emails Sent",
+      id: "total_emails_sent",
+      label: <>Total Emails Sent</>,
       value: compliance.totalEmailsSent,
       icon: Mail,
       color: "text-foreground bg-muted",
     },
     {
-      label: "Suppressed Emails",
+      id: "suppressed_emails",
+      label: <>Suppressed Emails</>,
       value: compliance.suppressionCount,
       icon: Ban,
       color: "text-foreground bg-muted",
     },
     {
-      label: "Unsubscribes",
+      id: "unsubscribes",
+      label: <>Unsubscribes</>,
       value: compliance.unsubscribeCount,
       icon: AlertTriangle,
       color: "text-foreground bg-muted",
     },
     {
-      label: "Bounces",
+      id: "bounces",
+      label: <>Bounces</>,
       value: compliance.bounceCount,
       icon: AlertTriangle,
       color: "text-foreground bg-muted",
@@ -68,13 +72,17 @@ export function ComplianceTab({ compliance }: ComplianceTabProps) {
             <div>
               <p className="font-semibold text-sm">
                 {canSpamCompliant
-                  ? "CAN-SPAM Compliant"
-                  : "Review Compliance Status"}
+                  ? <>CAN-SPAM Compliant</>
+                  : <>Review Compliance Status</>}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
                 {canSpamCompliant
-                  ? "Your campaigns meet CAN-SPAM requirements. Unsubscribe links are included and bounce rates are healthy."
-                  : "Your unsubscribe or bounce rates may need attention. Review the metrics below."}
+                  ? (
+                      <>Your campaigns meet CAN-SPAM requirements. Unsubscribe links are included and bounce rates are healthy.</>
+                    )
+                  : (
+                      <>Your unsubscribe or bounce rates may need attention. Review the metrics below.</>
+                    )}
               </p>
             </div>
             <Badge
@@ -90,7 +98,7 @@ export function ComplianceTab({ compliance }: ComplianceTabProps) {
       {/* Metric cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((m) => (
-          <Card key={m.label}>
+          <Card key={m.id}>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {m.label}

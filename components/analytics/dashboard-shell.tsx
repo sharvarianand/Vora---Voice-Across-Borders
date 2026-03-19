@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 import { cn } from "@/lib/utils";
 import { CommandCenter } from "@/components/analytics/command-center";
 import { OverviewTab } from "@/components/analytics/overview-tab";
@@ -19,10 +20,10 @@ import { Button } from "@/components/ui/button";
 
 type Tab = "overview" | "compliance" | "deliverability";
 
-const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: "overview", label: "Overview", icon: BarChart3 },
-  { id: "compliance", label: "Compliance", icon: Shield },
-  { id: "deliverability", label: "Deliverability", icon: Radio },
+const tabs: { id: Tab; label: React.ReactNode; icon: React.ElementType }[] = [
+  { id: "overview", label: <>Overview</>, icon: BarChart3 },
+  { id: "compliance", label: <>Compliance</>, icon: Shield },
+  { id: "deliverability", label: <>Deliverability</>, icon: Radio },
 ];
 
 interface DashboardShellProps {
@@ -35,6 +36,14 @@ export function DashboardShell({ campaignId, campaignName }: DashboardShellProps
   const { analytics, compliance, deliverability, warmup, loading, refresh } =
     useAnalyticsDashboard(campaignId);
   const [refreshing, setRefreshing] = useState(false);
+  const { locale } = useLingoContext();
+
+  // Re-fetch or re-render when locale changes
+  useEffect(() => {
+    if (locale) {
+      refresh();
+    }
+  }, [locale, refresh]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -46,7 +55,7 @@ export function DashboardShell({ campaignId, campaignName }: DashboardShellProps
     return (
       <div className="flex items-center justify-center h-full text-muted-foreground gap-2">
         <Loader2 className="h-5 w-5 animate-spin" />
-        Loading analytics...
+        <>Loading analytics...</>
       </div>
     );
   }

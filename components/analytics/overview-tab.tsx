@@ -15,6 +15,9 @@ import {
   Clock,
   ArrowRight,
   Activity,
+  AlertTriangle,
+  MessageCircle,
+  XCircle,
 } from "lucide-react";
 import type { EnrichedAnalytics, ActivityEvent } from "@/types";
 import {
@@ -56,14 +59,14 @@ function StatCard({
   progressLabel,
   className,
 }: {
-  label: string;
+  label: React.ReactNode;
   value: string | number;
   icon: React.ElementType;
   tone: "slate" | "sky" | "emerald" | "amber";
-  subtext?: string;
+  subtext?: React.ReactNode;
   emphasis?: "regular" | "hero";
   progress?: number;
-  progressLabel?: string;
+  progressLabel?: React.ReactNode;
   className?: string;
 }) {
   const toneStyles = {
@@ -504,10 +507,12 @@ function ActivityFeed({ events }: { events: ActivityEvent[] }) {
 
   const actionIcons: Record<string, React.ElementType> = {
     send_email: Mail,
+    send_whatsapp: MessageCircle,
     start: ArrowRight,
     end: CheckCircle,
     condition: Activity,
     wait: Clock,
+    error: AlertTriangle,
   };
 
   const actionColors: Record<string, string> = {
@@ -527,6 +532,13 @@ function ActivityFeed({ events }: { events: ActivityEvent[] }) {
             const Icon = actionIcons[event.action] || Activity;
             const color = actionColors[event.status] || "text-muted-foreground";
             const timeAgo = getRelativeTime(event.createdAt);
+            const reason =
+              event.action === "error" || event.status === "failed"
+                ? (event.metadata?.reason ??
+                    event.metadata?.error ??
+                    event.metadata?.message ??
+                    null)
+                : null;
             return (
               <div
                 key={event.id}
@@ -554,6 +566,11 @@ function ActivityFeed({ events }: { events: ActivityEvent[] }) {
                   <p className="text-muted-foreground truncate">
                     {formatAction(event.action)} — {event.leadEmail}
                   </p>
+                  {reason ? (
+                    <p className="text-[11px] text-muted-foreground mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                      {String(reason)}
+                    </p>
+                  ) : null}
                 </div>
                 <span className="text-muted-foreground whitespace-nowrap flex-shrink-0">
                   {timeAgo}
@@ -667,7 +684,7 @@ interface OverviewTabProps {
 
 export function OverviewTab({ analytics }: OverviewTabProps) {
   const sendCoverage = analytics.totalLeads
-    ? (analytics.emailsSent / analytics.totalLeads) * 100
+    ? (analytics.emailsAttempted / analytics.totalLeads) * 100
     : 0;
   const replyRateFromSent = analytics.emailsSent
     ? (analytics.replies / analytics.emailsSent) * 100
@@ -681,75 +698,129 @@ export function OverviewTab({ analytics }: OverviewTabProps) {
 
   const stats = [
     {
-      label: "Total Leads",
+      label: <>Total Leads</>,
       value: analytics.totalLeads,
       icon: Users,
       tone: "slate" as const,
-      subtext: analytics.totalLeads > 0 ? "Active campaign audience" : "No leads loaded yet",
+      subtext: analytics.totalLeads > 0 ? <>Active campaign audience</> : <>No leads loaded yet</>,
       progress: 100,
-      progressLabel: "Audience base",
+      progressLabel: <>Audience base</>,
       className: "xl:col-span-1",
     },
     {
-      label: "Emails Sent",
+      label: <>Emails Sent</>,
       value: analytics.emailsSent,
       icon: Mail,
       tone: "sky" as const,
-      subtext: analytics.emailsSkipped > 0 ? `${analytics.emailsSkipped} skipped` : "No skipped sends",
+      subtext: (
+        <>
+          {analytics.emailsFailed > 0 ? (
+            <>
+              {analytics.emailsFailed} failed
+              {analytics.emailsSkipped > 0 ? <> • {analytics.emailsSkipped} skipped</> : null}
+            </>
+          ) : analytics.emailsSkipped > 0 ? (
+            <>
+              {analytics.emailsSkipped} skipped
+            </>
+          ) : (
+            <>No failed/skipped attempts</>
+          )}
+        </>
+      ),
       progress: sendCoverage,
-      progressLabel: `${sendCoverage.toFixed(0)}% of leads reached`,
+      progressLabel: (
+        <>
+          {sendCoverage.toFixed(0)}% attempted
+        </>
+      ),
       className: "xl:col-span-1",
     },
     {
-      label: "Replies",
+      label: <>Replies</>,
       value: analytics.replies,
       icon: Reply,
       tone: "emerald" as const,
-      subtext: analytics.replies > 0 ? "Inbox activity detected" : "Waiting for first reply",
+      subtext: analytics.replies > 0 ? <>Inbox activity detected</> : <>Waiting for first reply</>,
       progress: replyRateFromSent,
-      progressLabel: `${replyRateFromSent.toFixed(1)}% of sent emails`,
+      progressLabel: (
+        <>
+          {replyRateFromSent.toFixed(1)}% of sent emails
+        </>
+      ),
       className: "xl:col-span-1",
     },
     {
-      label: "Reply Rate",
+      label: <>Reply Rate</>,
       value: `${analytics.replyRate}%`,
       icon: TrendingUp,
       tone: "emerald" as const,
       emphasis: "hero" as const,
-      subtext: analytics.replyRate >= 10 ? "Above baseline performance" : "Room to improve response rate",
+      subtext: analytics.replyRate >= 10 ? <>Above baseline performance</> : <>Room to improve response rate</>,
       progress: analytics.replyRate,
-      progressLabel: "Replies per 100 emails sent",
+      progressLabel: <>Replies per 100 emails sent</>,
       className: "xl:col-span-2",
     },
     {
-      label: "Completed",
+      label: <>Completed</>,
       value: analytics.completed,
       icon: CheckCircle,
       tone: "sky" as const,
-      subtext: `${analytics.failed} failed`,
+      subtext: (
+        <>
+          {analytics.failed} failed
+        </>
+      ),
       progress: completionRate,
-      progressLabel: `${completionRate.toFixed(0)}% campaign completion`,
+      progressLabel: (
+        <>
+          {completionRate.toFixed(0)}% campaign completion
+        </>
+      ),
       className: "xl:col-span-1",
     },
     {
-      label: "In Progress",
+      label: <>In Progress</>,
       value: analytics.inProgress,
       icon: Clock,
       tone: "amber" as const,
       emphasis: "hero" as const,
-      subtext: `${analytics.totalFollowups} follow-ups`,
+      subtext: (
+        <>
+          {analytics.totalFollowups} follow-ups
+        </>
+      ),
       progress: inProgressRate,
-      progressLabel: `${inProgressRate.toFixed(0)}% still active`,
+      progressLabel: (
+        <>
+          {inProgressRate.toFixed(0)}% still active
+        </>
+      ),
       className: "xl:col-span-2",
     },
   ];
 
   return (
     <div className="p-6 space-y-6">
+      {/* Failed email alert banner — shown prominently when sends have failed */}
+      {analytics.emailsFailed > 0 && (
+        <div className="flex items-start gap-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3">
+          <XCircle className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-red-400">
+              {analytics.emailsFailed} email{analytics.emailsFailed !== 1 ? "s" : ""} failed to send
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Check the Recent Activity feed below for error details. Common causes: AI generation failure, Gmail API error, or missing lead email.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-8 gap-3">
-        {stats.map((stat) => (
-          <StatCard key={stat.label} {...stat} />
+        {stats.map((stat, idx) => (
+          <StatCard key={idx} {...stat} />
         ))}
       </div>
 
@@ -780,6 +851,8 @@ function formatAction(action: string): string {
   switch (action) {
     case "send_email":
       return "Email sent";
+    case "send_whatsapp":
+      return "WhatsApp sent";
     case "start":
       return "Workflow started";
     case "end":
@@ -788,6 +861,8 @@ function formatAction(action: string): string {
       return "Condition checked";
     case "wait":
       return "Wait started";
+    case "error":
+      return "Error";
     default:
       return action;
   }
