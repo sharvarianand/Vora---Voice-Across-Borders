@@ -10,9 +10,9 @@ import { LocaleSwitcher } from "@/components/locale/locale-switcher";
 export default function Navbar() {
    const navRef = useRef<HTMLElement>(null);
    const navLinks = [
-      { label: "Features", target: "features" },
-      { label: "Dashboard", target: "dashboard" },
-      { label: "Contact", target: "contact" },
+      { label: <>Features</>, target: "features" },
+      { label: <>Dashboard</>, target: "dashboard" },
+      { label: <>Contact</>, target: "contact" },
    ] as const;
 
    const scrollToSection = (sectionId: string) => {
@@ -97,7 +97,7 @@ export default function Navbar() {
          >
             {navLinks.map((link) => (
                <button
-                  key={link.label}
+                  key={link.target}
                   type="button"
                   onClick={() => scrollToSection(link.target)}
                   style={{
@@ -138,7 +138,7 @@ export default function Navbar() {
                 cursor: "pointer",
              }}
           >
-             Dashboard
+             Get Started
           </LandingAuthButton>
       </nav>
    );

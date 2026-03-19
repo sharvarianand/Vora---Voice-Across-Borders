@@ -115,8 +115,8 @@ export default function DashboardShowcase() {
                   Product Overview · my-b2b-saas
                </div>
                <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1.25rem" }}>
-                  {kpis.map((kpi) => (
-                     <div key={kpi.label}>
+                  {kpis.map((kpi, idx) => (
+                     <div key={idx}>
                         <div
                            style={{
                               fontFamily: "var(--font-heading)",

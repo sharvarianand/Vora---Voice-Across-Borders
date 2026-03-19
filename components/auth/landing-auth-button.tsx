@@ -33,16 +33,24 @@ export function LandingAuthButton({
   const router = useRouter();
   const [view, setView] = useState<"sign-in" | "sign-up">(defaultView);
   const [isOpen, setIsOpen] = useState(false);
-  const wasSignedIn = useRef(false);
+  // Track whether the auth dialog was opened so we can redirect after sign-in
+  const dialogWasOpenedRef = useRef(false);
 
   useEffect(() => {
-    if (isLoaded && isSignedIn && !wasSignedIn.current && isOpen) {
-      router.replace(dashboardHref);
+    if (isOpen) dialogWasOpenedRef.current = true;
+  }, [isOpen]);
+
+  useEffect(() => {
+    // Redirect to dashboard as soon as the user becomes signed-in after
+    // having opened and interacted with the auth dialog.
+    if (isLoaded && isSignedIn && dialogWasOpenedRef.current) {
+      // Clean up the hash fragment Clerk leaves behind, then navigate
+      if (typeof window !== "undefined") {
+        window.location.hash = "";
+      }
+      router.push(dashboardHref);
     }
-    if (isLoaded) {
-      wasSignedIn.current = isSignedIn;
-    }
-  }, [isLoaded, isSignedIn, isOpen, router, dashboardHref]);
+  }, [isLoaded, isSignedIn, router, dashboardHref]);
 
   if (isSignedIn) {
     return (

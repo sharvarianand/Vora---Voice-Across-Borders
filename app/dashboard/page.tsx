@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SignOutButton, useAuth, useUser } from "@clerk/nextjs";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 
 import { ProductCard } from "@/components/dashboard/product-card";
 import { LocaleSwitcher } from "@/components/locale/locale-switcher";
@@ -26,10 +27,12 @@ export default function DashboardPage() {
   const router = useRouter();
   const { isLoaded } = useAuth();
   const { user } = useUser();
+  const { locale } = useLingoContext();
   const [products, setProducts] = useState<ProductWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!locale) return;
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
@@ -37,7 +40,7 @@ export default function DashboardPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (isLoaded && user) {
