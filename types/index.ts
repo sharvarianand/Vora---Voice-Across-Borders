@@ -281,6 +281,8 @@ export interface EnrichedAnalytics {
   totalLeads: number;
   emailsSent: number;
   emailsSkipped: number;
+  emailsFailed: number;
+  emailsAttempted: number;
   replies: number;
   replyRate: number;
   completed: number;
