@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -293,6 +294,7 @@ export function InboxPanel({ campaignId }: InboxPanelProps) {
   const [threadLoading, setThreadLoading] = useState(false);
   const [threadError, setThreadError] = useState<string | null>(null);
   const threadBottomRef = useRef<HTMLDivElement>(null);
+  const { locale } = useLingoContext();
 
   const selectedLead = campaignLeads.find((cl) => cl.id === selectedId);
 
@@ -359,6 +361,17 @@ export function InboxPanel({ campaignId }: InboxPanelProps) {
         setThreadLoading(false);
       });
   }, [selectedId]);
+
+  // Re-fetch everything when the user switches their preferred language from the navbar
+  const prevLocaleRef = useRef(locale);
+  useEffect(() => {
+    if (locale === prevLocaleRef.current) return;
+    prevLocaleRef.current = locale;
+    // Re-translate the leads list (sidebar subjects)
+    fetchLeads();
+    // Re-translate the open thread (message bodies)
+    if (selectedId) fetchThread(selectedId);
+  }, [locale, fetchLeads, fetchThread, selectedId]);
 
   // Auto-scroll to bottom when messages update
   useEffect(() => {

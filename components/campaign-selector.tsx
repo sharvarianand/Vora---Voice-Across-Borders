@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams, usePathname } from "next/navigation";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 import {
   Select,
   SelectContent,
@@ -18,6 +19,7 @@ export function CampaignSelector() {
   const pathname = usePathname();
   const productId = params?.productId as string | undefined;
   const campaignId = params?.campaignId as string | undefined;
+  const { locale } = useLingoContext();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function CampaignSelector() {
       .then((r) => r.json())
       .then(setCampaigns)
       .catch(console.error);
-  }, [productId]);
+  }, [productId, locale]);
 
   if (!productId) return null;
 
