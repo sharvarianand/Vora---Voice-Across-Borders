@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -39,19 +40,20 @@ import { Label } from "@/components/ui/label";
 import { Plus, Megaphone, Loader2, MoreVertical, Trash2, Workflow } from "lucide-react";
 import { toast } from "sonner";
 import type { Campaign } from "@/types";
-import { campaignTemplates, type CampaignTemplate } from "@/lib/templates";
+import { getCampaignTemplates, type CampaignTemplate } from "@/lib/templates";
 
 interface CampaignWithCounts extends Campaign {
-  campaign_leads: [{ count: number }];
+   campaign_leads: [{ count: number }];
 }
 
 const statusColors: Record<string, string> = {
-  draft: "bg-gray-100 text-gray-700",
-  active: "bg-green-100 text-green-700",
-  completed: "bg-blue-100 text-blue-700",
+   draft: "bg-gray-100 text-gray-700",
+   active: "bg-green-100 text-green-700",
+   completed: "bg-blue-100 text-blue-700",
 };
 
 export default function CampaignsPage() {
+   const campaignTemplates = getCampaignTemplates();
   const params = useParams();
   const router = useRouter();
   const productId = params.productId as string;
@@ -63,8 +65,10 @@ export default function CampaignsPage() {
   const [selectedTemplate, setSelectedTemplate] = useState<CampaignTemplate | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<CampaignWithCounts | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const { locale } = useLingoContext();
 
-  function fetchCampaigns() {
+  const fetchCampaigns = useCallback(() => {
+    if (!locale) return;
     setLoading(true);
     fetch(`/api/campaigns?productId=${productId}`)
       .then((r) => r.json())
@@ -73,12 +77,11 @@ export default function CampaignsPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }
+  }, [productId, locale]);
 
   useEffect(() => {
     fetchCampaigns();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productId]);
+  }, [fetchCampaigns]);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();

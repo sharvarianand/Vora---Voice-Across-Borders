@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -57,23 +58,24 @@ function BuilderInner() {
   const [rateLimitValue, setRateLimitValue] = useState<string>("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const { locale } = useLingoContext();
 
   const nodeItems = [
-    { type: "start", label: "Start", icon: Play, color: "text-green-600 bg-green-100" },
-    { type: "send_email", label: "Send Email", icon: Mail, color: "text-blue-600 bg-blue-100" },
-    { type: "send_whatsapp", label: "Send WhatsApp", icon: MessageCircle, color: "text-teal-600 bg-teal-100" },
-    { type: "wait", label: "Wait / Delay", icon: Clock, color: "text-amber-600 bg-amber-100" },
-    { type: "condition", label: "If / Else", icon: GitBranch, color: "text-purple-600 bg-purple-100" },
-    { type: "auto_reply", label: "Auto Reply", icon: MessageSquareReply, color: "text-teal-600 bg-teal-100" },
-    { type: "end", label: "End", icon: Square, color: "text-red-600 bg-red-100" },
+    { type: "start", label: <>Start</>, icon: Play, color: "text-green-600 bg-green-100" },
+    { type: "send_email", label: <>Send Email</>, icon: Mail, color: "text-blue-600 bg-blue-100" },
+    { type: "send_whatsapp", label: <>Send WhatsApp</>, icon: MessageCircle, color: "text-teal-600 bg-teal-100" },
+    { type: "wait", label: <>Wait / Delay</>, icon: Clock, color: "text-amber-600 bg-amber-100" },
+    { type: "condition", label: <>If / Else</>, icon: GitBranch, color: "text-purple-600 bg-purple-100" },
+    { type: "auto_reply", label: <>Auto Reply</>, icon: MessageSquareReply, color: "text-teal-600 bg-teal-100" },
+    { type: "end", label: <>End</>, icon: Square, color: "text-red-600 bg-red-100" },
   ];
 
-  const sidebarNav: { view: View; label: string; icon: React.ElementType }[] = [
-    { view: "workflow", label: "Workflow Editor", icon: Workflow },
-    { view: "leads", label: "Leads", icon: Users },
-    { view: "analytics", label: "Analytics", icon: BarChart3 },
-    { view: "automation", label: "Automation", icon: BrainCircuit },
-    { view: "inbox", label: "Inbox", icon: Inbox },
+  const sidebarNav: { view: View; label: React.ReactNode; icon: React.ElementType }[] = [
+    { view: "workflow", label: <>Workflow Editor</>, icon: Workflow },
+    { view: "leads", label: <>Leads</>, icon: Users },
+    { view: "analytics", label: <>Analytics</>, icon: BarChart3 },
+    { view: "automation", label: <>Automation</>, icon: BrainCircuit },
+    { view: "inbox", label: <>Inbox</>, icon: Inbox },
   ];
 
   const {
@@ -90,6 +92,7 @@ function BuilderInner() {
   const { screenToFlowPosition, toObject } = useReactFlow();
 
   useEffect(() => {
+    if (!locale) return;
     clear();
     fetch(`/api/campaigns/${campaignId}`)
       .then((r) => r.json())
@@ -103,7 +106,7 @@ function BuilderInner() {
         loadWorkflow(data.workflow_json?.nodes || [], data.workflow_json?.edges || []);
       })
       .catch(() => toast.error("Failed to load campaign"));
-  }, [campaignId, loadWorkflow, clear]);
+  }, [campaignId, loadWorkflow, clear, locale]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();

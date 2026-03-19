@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 
 import { LeadsTable } from "@/components/leads/leads-table";
 import { UploadDialog } from "@/components/leads/upload-dialog";
@@ -13,8 +14,10 @@ export default function LeadsPage() {
   const productId = params.productId as string;
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const { locale } = useLingoContext();
 
   const fetchLeads = useCallback(() => {
+    if (!locale) return;
     setLoading(true);
     fetch(`/api/leads?productId=${productId}`)
       .then((r) => r.json())
@@ -23,7 +26,7 @@ export default function LeadsPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [productId]);
+  }, [productId, locale]);
 
   useEffect(() => {
     const id = window.setTimeout(() => {
@@ -35,14 +38,14 @@ export default function LeadsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Leads</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {`${leads.length} leads in this product`}
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <FindLeadsDialog productId={productId} onAdded={fetchLeads} />
           <UploadDialog productId={productId} onUploaded={fetchLeads} />
         </div>

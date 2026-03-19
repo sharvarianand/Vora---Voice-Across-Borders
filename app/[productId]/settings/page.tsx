@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { nanoid } from "nanoid";
 import Papa from "papaparse";
 import { toast } from "sonner";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 import {
   Plus, Trash2, ChevronDown, ChevronUp, Upload, FileText,
   HelpCircle, Save, Loader2, X, Check, Package,
@@ -284,6 +285,7 @@ function WhatsAppSettings() {
 export default function ProductSettingsPage() {
   const params = useParams();
   const productId = params.productId as string;
+  const { locale } = useLingoContext();
 
   const [loading, setLoading] = useState(true);
 
@@ -326,7 +328,7 @@ export default function ProductSettingsPage() {
       })
       .catch(() => toast.error("Failed to load product"))
       .finally(() => setLoading(false));
-  }, [productId]);
+  }, [productId, locale]);
 
   async function saveDetails() {
     setSavingDetails(true);

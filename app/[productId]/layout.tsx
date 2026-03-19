@@ -11,6 +11,8 @@ import { Separator } from "@/components/ui/separator";
 import { Users, Megaphone } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { UserButton } from "@clerk/nextjs";
+import { useLingoContext } from "@lingo.dev/compiler/react";
 
 export default function ProductLayout({
   children,
@@ -20,10 +22,11 @@ export default function ProductLayout({
   const params = useParams();
   const pathname = usePathname();
   const productId = params.productId as string;
+  const { locale } = useLingoContext();
 
   const navItems = [
-    { label: "Campaigns", href: "/campaigns", icon: Megaphone },
-    { label: "Leads List", href: "/leads", icon: Users },
+    { label: <>Campaigns</>, href: "/campaigns", icon: Megaphone },
+    { label: <>Leads List</>, href: "/leads", icon: Users },
   ];
 
   // Hide sidebar when inside a campaign detail (campaignId segment present)
@@ -48,6 +51,7 @@ export default function ProductLayout({
           <div className="flex items-center gap-3">
             <LocaleSwitcher />
             <ThemeToggle />
+            <UserButton />
           </div>
         </div>
       </header>
