@@ -22,25 +22,27 @@ export async function sendEmail(params: {
   to: string;
   subject: string;
   htmlBody: string;
+  plainBody?: string;
   threadId?: string;
   replyToMessageId?: string;
-  /** Space-separated list of all RFC Message-IDs in the thread chain (RFC 2822 References header). */
   referencesChain?: string;
-  /** URL for the List-Unsubscribe header (CAN-SPAM / RFC 8058). */
   unsubscribeUrl?: string;
 }): Promise<{ messageId: string; threadId: string; rfcMessageId: string | null }> {
   const gmail = getGmailClient();
-  const { to, subject, htmlBody, threadId, replyToMessageId, referencesChain, unsubscribeUrl } = params;
+  const { to, subject, htmlBody, plainBody, threadId, replyToMessageId, referencesChain, unsubscribeUrl } = params;
 
   const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
-  // Use the full references chain when available; fall back to just the direct parent.
   const referencesValue = referencesChain || replyToMessageId || null;
+  const boundary = `----=_Part_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  
+  const textContent = plainBody || htmlBody.replace(/<[^>]*>/g, "");
+  
   const messageParts = [
     `From: ${process.env.GMAIL_USER_EMAIL}`,
     `To: ${to}`,
     `Subject: ${utf8Subject}`,
     "MIME-Version: 1.0",
-    "Content-Type: text/plain; charset=utf-8",
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
     ...(replyToMessageId
       ? [
           `In-Reply-To: ${replyToMessageId}`,
@@ -54,7 +56,19 @@ export async function sendEmail(params: {
         ]
       : []),
     "",
+    `--${boundary}`,
+    "Content-Type: text/plain; charset=utf-8",
+    "Content-Transfer-Encoding: quoted-printable",
+    "",
+    textContent,
+    "",
+    `--${boundary}`,
+    "Content-Type: text/html; charset=utf-8",
+    "Content-Transfer-Encoding: quoted-printable",
+    "",
     htmlBody,
+    "",
+    `--${boundary}--`,
   ];
 
   const rawMessage = Buffer.from(messageParts.join("\n"))
@@ -63,13 +77,19 @@ export async function sendEmail(params: {
     .replace(/\//g, "_")
     .replace(/=+$/, "");
 
-  const res = await gmail.users.messages.send({
-    userId: "me",
-    requestBody: {
-      raw: rawMessage,
-      threadId: threadId || undefined,
-    },
-  });
+  let res;
+  try {
+    res = await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: rawMessage,
+        threadId: threadId || undefined,
+      },
+    });
+  } catch (error) {
+    console.error("Gmail send error:", error);
+    throw error;
+  }
 
   const sentMessageId = res.data.id!;
   const metadata = await gmail.users.messages.get({

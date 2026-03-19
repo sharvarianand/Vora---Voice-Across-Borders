@@ -1,4 +1,4 @@
-import { AzureOpenAI } from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import {
   getLeadLocale,
   normalizeLocale,
@@ -6,14 +6,131 @@ import {
 import { localizeEmailContent, localizeHtmlText, localizePlainText } from "@/lib/lingo-server";
 import type { Lead, EnrichedLeadData, KnowledgeBaseItem, ThreadMessage } from "@/types";
 
-const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
+const geminiModel = process.env.GEMINI_MODEL || "gemini-2.0-flash";
 
-function getAzureOpenAIClient() {
-  return new AzureOpenAI({
-    endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
-    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
-    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+type ModelJsonArgs = {
+  system: string;
+  user: string;
+  temperature?: number;
+};
+
+function getGeminiClient() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing GEMINI_API_KEY");
+  }
+  return new GoogleGenerativeAI(apiKey);
+}
+
+function safeParseJson<T>(raw: string): T {
+  const trimmed = raw.trim();
+  try {
+    return JSON.parse(trimmed) as T;
+  } catch {
+    // Fallback: extract the first JSON object substring.
+    const start = trimmed.indexOf("{");
+    const end = trimmed.lastIndexOf("}");
+    if (start >= 0 && end > start) {
+      return JSON.parse(trimmed.slice(start, end + 1)) as T;
+    }
+    throw new Error("Model returned non-JSON response");
+  }
+}
+
+function hasAzureOpenAiConfig(): boolean {
+  return Boolean(
+    (process.env.AZURE_OPENAI_API_KEY || "").trim() &&
+      (process.env.AZURE_OPENAI_BASE_URL || process.env.AZURE_OPENAI_ENDPOINT || "").trim() &&
+      ((process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "").trim() ||
+        (process.env.AZURE_OPENAI_MODEL || "").trim())
+  );
+}
+
+async function generateGeminiJson<T>(args: ModelJsonArgs): Promise<T> {
+  const genAI = getGeminiClient();
+  const model = genAI.getGenerativeModel({ model: geminiModel });
+
+  const result = await model.generateContent({
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: `${args.system}\n\nUSER:\n${args.user}` }],
+      },
+    ],
+    generationConfig: {
+      responseMimeType: "application/json",
+      temperature: args.temperature ?? 0.7,
+    },
   });
+
+  const text = result.response.text();
+  return safeParseJson<T>(text);
+}
+
+async function generateAzureJson<T>(args: ModelJsonArgs): Promise<T> {
+  const apiKey = (process.env.AZURE_OPENAI_API_KEY || "").trim();
+  const deployment =
+    (process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "").trim() ||
+    (process.env.AZURE_OPENAI_MODEL || "").trim() ||
+    "gpt-4o-mini";
+  const baseUrl = (process.env.AZURE_OPENAI_BASE_URL || "").trim();
+  const endpoint = (process.env.AZURE_OPENAI_ENDPOINT || "").trim();
+  const urlBase = baseUrl || endpoint;
+  if (!apiKey || !urlBase || !deployment) {
+    throw new Error("Missing AZURE_OPENAI_* configuration");
+  }
+
+  // This assumes the configured base URL is OpenAI-compatible (e.g. ends with /openai/v1).
+  // If you're using the Azure deployments-style endpoint, set AZURE_OPENAI_BASE_URL accordingly.
+  const url = `${urlBase.replace(/\/+$/, "")}/chat/completions`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": apiKey,
+    },
+    body: JSON.stringify({
+      model: deployment,
+      temperature: args.temperature ?? 0.7,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: args.system },
+        { role: "user", content: args.user },
+      ],
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(
+      `Azure OpenAI error ${res.status} ${res.statusText}${text ? `: ${text.slice(0, 500)}` : ""}`
+    );
+  }
+
+  const json = (await res.json()) as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+  const content = json.choices?.[0]?.message?.content ?? "";
+  if (!content.trim()) {
+    throw new Error("Azure OpenAI returned empty response");
+  }
+  return safeParseJson<T>(content);
+}
+
+export async function generateModelJson<T>(args: ModelJsonArgs): Promise<T> {
+  // If Azure is configured, try it first.
+  if (hasAzureOpenAiConfig()) {
+    try {
+      return await generateAzureJson<T>(args);
+    } catch (error) {
+      console.warn("Azure OpenAI failed, falling back to Gemini:", error);
+      // Fall through to Gemini below.
+    }
+  }
+
+  // Use Gemini as the default or fallback.
+  return generateGeminiJson<T>(args);
 }
 
 /**
@@ -105,20 +222,11 @@ export async function generateMessage(
     knowledgeBaseInstruction +
     enrichmentInstruction;
 
-  const response = await getAzureOpenAIClient().chat.completions.create({
-    model: deployment,
-    messages: [
-      { role: "system", content: systemInstruction },
-      { role: "user", content: `${effectivePrompt}\n\n${personalizationInstruction}` }
-    ],
-    response_format: { type: "json_object" },
+  const parsed = await generateModelJson<{ subject: string; body: string }>({
+    system: systemInstruction,
+    user: `${effectivePrompt}\n\n${personalizationInstruction}`,
+    temperature: 0.7,
   });
-  const content = response.choices[0].message.content;
-  if (!content) {
-    throw new Error("No response from Azure OpenAI");
-  }
-
-  const parsed = JSON.parse(content) as { subject: string; body: string };
   return localizeEmailContent(
     {
       subject: parsed.subject,
@@ -175,24 +283,16 @@ export async function generateAutoReply(
     .filter(Boolean)
     .join("\n");
 
-  const response = await getAzureOpenAIClient().chat.completions.create({
-    model: deployment,
-    messages: [
-      { role: "system", content: systemInstruction },
-      { role: "user", content: `EMAIL THREAD (latest last):\n\n${threadBlock}\n\nShould I auto-reply?` }
-    ],
-    response_format: { type: "json_object" },
-  });
-
-  const raw = response.choices[0].message.content;
-  if (!raw) throw new Error("No response from Azure OpenAI for auto-reply");
-
-  const parsed = JSON.parse(raw) as {
+  const parsed = await generateModelJson<{
     can_answer: boolean;
     subject?: string | null;
     body?: string | null;
     reasoning?: string;
-  };
+  }>({
+    system: systemInstruction,
+    user: `EMAIL THREAD (latest last):\n\n${threadBlock}\n\nShould I auto-reply?`,
+    temperature: 0.2,
+  });
 
   const targetLocale = getLeadLocale(lead);
   const [subject, body, reasoning] = await Promise.all([
@@ -239,18 +339,12 @@ export async function generateWhatsAppMessage(
     "Plain text only — no HTML, no markdown, no bullet symbols. Conversational tone. " +
     'Respond with JSON: {"body": "..."}';
 
-  const response = await getAzureOpenAIClient().chat.completions.create({
-    model: deployment,
-    messages: [
-      { role: "system", content: systemInstruction },
-      { role: "user", content: effectivePrompt }
-    ],
-    response_format: { type: "json_object" },
-  });
-
-  const raw = response.choices[0].message.content ?? "{}";
   try {
-    const parsed = JSON.parse(raw) as { body?: string };
+    const parsed = await generateModelJson<{ body?: string }>({
+      system: systemInstruction,
+      user: effectivePrompt,
+      temperature: 0.6,
+    });
     const body = parsed.body?.trim() || "Hi {{name}}, following up — would love to connect.";
     return {
       body: await localizePlainText(body, resolveTargetLocale(lead, options?.targetLocale)),

@@ -1,67 +1,71 @@
+import type { ReactNode } from "react";
 import type { WorkflowJSON } from "@/types";
 
 // ── Product Templates ────────────────────────────────────────────────────────
 
 export interface ProductTemplate {
-  id: string;
-  label: string;
-  description: string;
-  name: string;
-  productDescription: string;
+   id: string;
+   label: ReactNode;
+   description: ReactNode;
+   name: string;
+   productDescription: string;
 }
 
-export const productTemplates: ProductTemplate[] = [
-  {
-    id: "b2b-saas",
-    label: "B2B SaaS",
-    description: "A software-as-a-service product for businesses",
-    name: "My B2B SaaS",
-    productDescription:
-      "A B2B SaaS platform that helps companies streamline their operations with AI-powered automation, reducing manual work and improving team productivity.",
-  },
-  {
-    id: "dev-tools",
-    label: "Developer Tools",
-    description: "SDK, API, or dev-focused product",
-    name: "DevTool Pro",
-    productDescription:
-      "A developer tools platform offering APIs and SDKs that simplify complex integrations, helping engineering teams ship faster with fewer bugs.",
-  },
-  {
-    id: "consulting",
-    label: "Consulting / Agency",
-    description: "Professional services outreach",
-    name: "Growth Agency",
-    productDescription:
-      "A growth consulting agency specializing in helping B2B startups scale their go-to-market strategy through data-driven outreach and demand generation.",
-  },
-  {
-    id: "marketplace",
-    label: "Marketplace / Platform",
-    description: "Two-sided marketplace or platform product",
-    name: "ConnectHub",
-    productDescription:
-      "A B2B marketplace connecting enterprise buyers with vetted service providers, streamlining procurement and vendor management.",
-  },
-];
+export function getProductTemplates(): ProductTemplate[] {
+   return [
+      {
+         id: "b2b-saas",
+         label: <>B2B SaaS</>,
+         description: <>A software-as-a-service product for businesses</>,
+         name: "My B2B SaaS",
+         productDescription:
+            "A B2B SaaS platform that helps companies streamline their operations with AI-powered automation, reducing manual work and improving team productivity.",
+      },
+      {
+         id: "dev-tools",
+         label: <>Developer Tools</>,
+         description: <>SDK, API, or dev-focused product</>,
+         name: "DevTool Pro",
+         productDescription:
+            "A developer tools platform offering APIs and SDKs that simplify complex integrations, helping engineering teams ship faster with fewer bugs.",
+      },
+      {
+         id: "consulting",
+         label: <>Consulting / Agency</>,
+         description: <>Professional services outreach</>,
+         name: "Growth Agency",
+         productDescription:
+            "A growth consulting agency specializing in helping B2B startups scale their go-to-market strategy through data-driven outreach and demand generation.",
+      },
+      {
+         id: "marketplace",
+         label: <>Marketplace / Platform</>,
+         description: <>Two-sided marketplace or platform product</>,
+         name: "ConnectHub",
+         productDescription:
+            "A B2B marketplace connecting enterprise buyers with vetted service providers, streamlining procurement and vendor management.",
+      },
+   ];
+}
 
 // ── Campaign Workflow Templates ─────────────────────────────────────────────
 
 export interface CampaignTemplate {
-  id: string;
-  label: string;
-  description: string;
-  campaignName: string;
-  workflow: WorkflowJSON;
+   id: string;
+   label: ReactNode;
+   description: ReactNode;
+   campaignName: string;
+   workflow: WorkflowJSON;
 }
 
-export const campaignTemplates: CampaignTemplate[] = [
-  {
-    id: "simple-outreach",
-    label: "Simple Outreach",
-    description: "Send one email → wait → check reply → end",
-    campaignName: "Simple Outreach",
-    workflow: {
+export function getCampaignTemplates(): CampaignTemplate[] {
+   return [
+      {
+         id: "simple-outreach",
+         label: <>Simple Outreach</>,
+         description: <>Send one email → wait → check reply → end</>,
+         campaignName: "Simple Outreach",
+         workflow: {
       nodes: [
         { id: "start-1", type: "start", position: { x: 300, y: 50 }, data: {} },
         {
@@ -99,10 +103,10 @@ export const campaignTemplates: CampaignTemplate[] = [
     },
   },
   {
-    id: "two-step-followup",
-    label: "2-Step Follow-up",
-    description: "Email → wait → check → follow-up → wait → check → end",
-    campaignName: "2-Step Follow-up",
+     id: "two-step-followup",
+     label: <>2-Step Follow-up</>,
+     description: <>Email → wait → check → follow-up → wait → check → end</>,
+     campaignName: "2-Step Follow-up",
     workflow: {
       nodes: [
         { id: "start-1", type: "start", position: { x: 350, y: 50 }, data: {} },
@@ -168,10 +172,10 @@ export const campaignTemplates: CampaignTemplate[] = [
     },
   },
   {
-    id: "three-step-drip",
-    label: "3-Step Drip",
-    description: "Three emails with increasing urgency, reply checks between each",
-    campaignName: "3-Step Drip Campaign",
+     id: "three-step-drip",
+     label: <>3-Step Drip</>,
+     description: <>Three emails with increasing urgency, reply checks between each</>,
+     campaignName: "3-Step Drip Campaign",
     workflow: {
       nodes: [
         { id: "start-1", type: "start", position: { x: 350, y: 50 }, data: {} },
@@ -248,10 +252,10 @@ export const campaignTemplates: CampaignTemplate[] = [
     },
   },
   {
-    id: "broadcast",
-    label: "Broadcast (Same Email)",
-    description: "Send one identical email to all leads — no follow-ups",
-    campaignName: "Broadcast",
+     id: "broadcast",
+     label: <>Broadcast (Same Email)</>,
+     description: <>Send one identical email to all leads — no follow-ups</>,
+     campaignName: "Broadcast",
     workflow: {
       nodes: [
         { id: "start-1", type: "start", position: { x: 300, y: 50 }, data: {} },
@@ -271,6 +275,7 @@ export const campaignTemplates: CampaignTemplate[] = [
         { id: "e-1", source: "start-1", target: "email-1" },
         { id: "e-2", source: "email-1", target: "end-1" },
       ],
-    },
-  },
-];
+     },
+   },
+   ];
+}

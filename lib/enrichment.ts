@@ -1,15 +1,13 @@
-import { AzureOpenAI } from "openai";
 import Exa from "exa-js";
 import type { Lead } from "@/types";
 import type { EnrichedLeadData } from "@/types";
+import { generateModelJson } from "@/lib/openai";
 
-const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
-
-function getAzureOpenAIClient() {
-  return new AzureOpenAI({
-    endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
-    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
-    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+async function generateJson<T>(args: { system: string; user: string }): Promise<T> {
+  return generateModelJson<T>({
+    system: args.system,
+    user: args.user,
+    temperature: 0.3,
   });
 }
 
@@ -187,25 +185,23 @@ Return a JSON object with this exact shape:
 If a field cannot be determined from the data, set it to null or an empty array.
 Focus on personalization_hooks — these are the most important output.`;
 
-  const response = await getAzureOpenAIClient().chat.completions.create({
-    model: deployment,
-    messages: [
-      { role: "system", content: systemInstruction },
-      { role: "user", content: `Scraped web content:\n\n${scrapedContent}` }
-    ],
-    response_format: { type: "json_object" },
-  });
+  let parsed: Omit<EnrichedLeadData, "scraped_at" | "sources_used"> | null = null;
+  try {
+    parsed = await generateJson<Omit<EnrichedLeadData, "scraped_at" | "sources_used">>({
+      system: systemInstruction,
+      user: `Scraped web content:\n\n${scrapedContent}`,
+    });
+  } catch {
+    parsed = null;
+  }
 
-  const raw = response.choices[0].message.content;
-  if (!raw) {
+  if (!parsed) {
     return {
       personalization_hooks: [],
       sources_used: sourcesUsed,
       scraped_at: new Date().toISOString(),
     };
   }
-
-  const parsed = JSON.parse(raw) as Omit<EnrichedLeadData, "scraped_at" | "sources_used">;
 
   return {
     ...parsed,

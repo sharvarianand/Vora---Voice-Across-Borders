@@ -1,15 +1,14 @@
-import { AzureOpenAI } from "openai";
 import Exa from "exa-js";
 import type { Product } from "@/types";
+import { generateModelJson } from "@/lib/openai";
 
-const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME || "gpt-4o";
-
-function getAzureOpenAIClient() {
-  return new AzureOpenAI({
-    endpoint: process.env.AZURE_OPENAI_ENDPOINT || "",
-    apiKey: process.env.AZURE_OPENAI_API_KEY || "",
-    apiVersion: process.env.AZURE_OPENAI_API_VERSION || "2023-05-15",
+async function generateJson<T>(args: { system: string; user: string }): Promise<T> {
+  const parsed = await generateModelJson<T>({
+    system: args.system,
+    user: args.user,
+    temperature: 0.2,
   });
+  return parsed;
 }
 
 export interface CandidateLead {
@@ -94,19 +93,10 @@ Rules:
 - If no relevant leads are found, return { "leads": [] }
 - Do not hallucinate data — only extract what is present in the search results`;
 
-    const response = await getAzureOpenAIClient().chat.completions.create({
-      model: deployment,
-      messages: [
-        { role: "system", content: systemInstruction },
-        { role: "user", content: `Web search results:\n\n${searchContext}` }
-      ],
-      response_format: { type: "json_object" },
+    const parsed = await generateJson<{ leads: CandidateLead[] }>({
+      system: systemInstruction,
+      user: `Web search results:\n\n${searchContext}`,
     });
-
-    const raw = response.choices[0].message.content;
-    if (!raw) return [];
-
-    const parsed = JSON.parse(raw) as { leads: CandidateLead[] };
     return Array.isArray(parsed.leads) ? parsed.leads : [];
   } catch (err) {
     console.error("Lead extraction failed:", err);
