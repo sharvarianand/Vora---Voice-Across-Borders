@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SUPPORTED_LOCALES, getLocaleMeta, toFlagEmoji } from "@/lib/lingo";
+import { SUPPORTED_LOCALES, getLocaleMeta, toFlagEmoji, getLocaleCookieName } from "@/lib/lingo";
 
 import { useRouter } from "next/navigation";
 
@@ -41,6 +41,13 @@ export function LocaleSwitcher() {
             onClick={() => {
               startTransition(async () => {
                 await setLocale(option.code as LocaleCode);
+                
+                // Manually set the cookie with robust attributes for production (GCP)
+                const cookieName = getLocaleCookieName();
+                const maxAge = 60 * 60 * 24 * 365;
+                const isProd = process.env.NODE_ENV === "production";
+                document.cookie = `${cookieName}=${option.code}; Path=/; Max-Age=${maxAge}; SameSite=Lax${isProd ? "; Secure" : ""}`;
+                
                 router.refresh();
               });
             }}

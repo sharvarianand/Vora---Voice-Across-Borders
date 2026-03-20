@@ -9,5 +9,6 @@
       "hi"
     ]
   },
-  "buckets": {}
+  "buckets": {},
+  "$schema": "https://lingo.dev/schema/i18n.json"
 }
