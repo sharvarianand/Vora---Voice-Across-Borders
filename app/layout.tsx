@@ -112,6 +112,32 @@ export default async function RootLayout({
 }>) {
   const locale = await getServerLocale();
   const initialTranslations = await loadLingoDictionary(locale);
+  const page = (
+    <html lang={locale} suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${bebasNeue.variable} font-sans antialiased`}
+      >
+        <LingoClientProvider
+          initialLocale={locale}
+          initialTranslations={initialTranslations}
+          devWidget={{ enabled: false }}
+        >
+          <GSAPProvider>
+            <LenisProvider>
+              <ThemeProvider>
+                {children}
+                <Toaster />
+              </ThemeProvider>
+            </LenisProvider>
+          </GSAPProvider>
+        </LingoClientProvider>
+      </body>
+    </html>
+  );
+
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+    return page;
+  }
 
   return (
     <ClerkProvider
@@ -121,26 +147,7 @@ export default async function RootLayout({
       signInFallbackRedirectUrl="/dashboard"
       signUpFallbackRedirectUrl="/dashboard"
     >
-      <html lang={locale} suppressHydrationWarning>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${bebasNeue.variable} font-sans antialiased`}
-        >
-          <LingoClientProvider
-            initialLocale={locale}
-            initialTranslations={initialTranslations}
-            devWidget={{ enabled: false }}
-          >
-            <GSAPProvider>
-              <LenisProvider>
-                <ThemeProvider>
-                  {children}
-                  <Toaster />
-                </ThemeProvider>
-              </LenisProvider>
-            </GSAPProvider>
-          </LingoClientProvider>
-        </body>
-      </html>
+      {page}
     </ClerkProvider>
   );
 }

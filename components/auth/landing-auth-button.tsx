@@ -29,6 +29,33 @@ export function LandingAuthButton({
   dashboardHref = "/dashboard",
   defaultView = "sign-in",
 }: LandingAuthButtonProps) {
+  if (!process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+    return (
+      <Link href={dashboardHref} className={className} style={style}>
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <ClerkLandingAuthButton
+      className={className}
+      style={style}
+      dashboardHref={dashboardHref}
+      defaultView={defaultView}
+    >
+      {children}
+    </ClerkLandingAuthButton>
+  );
+}
+
+function ClerkLandingAuthButton({
+  children,
+  className,
+  style,
+  dashboardHref = "/dashboard",
+  defaultView = "sign-in",
+}: LandingAuthButtonProps) {
   const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
   const [view, setView] = useState<"sign-in" | "sign-up">(defaultView);
