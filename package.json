@@ -44,7 +44,13 @@
     "zustand": "^5.0.11"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["lmdb", "msgpackr-extract"]
+    "onlyBuiltDependencies": [
+      "@clerk/shared",
+      "@whiskeysockets/baileys",
+      "lmdb",
+      "msgpackr-extract",
+      "protobufjs"
+    ]
   },
   "devDependencies": {
     "@hapi/boom": "^10.0.1",
