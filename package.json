@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "mkdir -p lingo/metadata-build && next build",
+    "build": "mkdir -p lingo/metadata-build && NODE_OPTIONS=--max-old-space-size=4096 next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "lingo": "lingo.dev",
