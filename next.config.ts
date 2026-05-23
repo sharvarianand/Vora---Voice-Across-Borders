@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { createRequire } from "module";
 import type { NextConfig } from "next";
 import { withLingo } from "@lingo.dev/compiler/next";
 import type { LocaleCode } from "lingo.dev/spec";
@@ -35,7 +36,48 @@ const buildMode = isProduction ? "cache-only" : "translate";
 const usePseudotranslator =
   process.env.LINGO_USE_PSEUDOTRANSLATOR === "true" || (!hasLingoApiKey && !isProduction);
 
-const nextConfig: NextConfig = {};
+async function ensureLingoMetadataBuildDb() {
+  const metadataDir = path.join(process.cwd(), "lingo", "metadata-build");
+  const dataFile = path.join(metadataDir, "data.mdb");
+
+  if (fs.existsSync(dataFile)) return;
+
+  fs.mkdirSync(metadataDir, { recursive: true });
+
+  const require = createRequire(import.meta.url);
+  const nextPluginPath = require.resolve("@lingo.dev/compiler/next");
+  const compilerRoot = path.resolve(path.dirname(nextPluginPath), "..", "..");
+  const compilerRequire = createRequire(path.join(compilerRoot, "package.json"));
+  const lmdbPath = compilerRequire.resolve("lmdb");
+  const lmdb = (await import(lmdbPath)) as {
+    open: (options: {
+      path: string;
+      compression: boolean;
+      noSync: boolean;
+    }) => {
+      transactionSync: (callback: () => void) => void;
+      close: () => Promise<void>;
+    };
+  };
+
+  const db = lmdb.open({
+    path: metadataDir,
+    compression: true,
+    noSync: true,
+  });
+
+  try {
+    db.transactionSync(() => {});
+  } finally {
+    await db.close();
+  }
+}
+
+const nextConfig: NextConfig = {
+  compiler: {
+    runAfterProductionCompile: ensureLingoMetadataBuildDb,
+  },
+};
 
 export default withLingo(nextConfig, {
   sourceRoot: ".",
