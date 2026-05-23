@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { SignOutButton, useAuth, useUser } from "@clerk/nextjs";
 import { useLingoContext } from "@lingo.dev/compiler/react";
 
 import { ProductCard } from "@/components/dashboard/product-card";
@@ -25,8 +24,6 @@ interface ProductWithCounts {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { isLoaded } = useAuth();
-  const { user } = useUser();
   const { locale } = useLingoContext();
   const [products, setProducts] = useState<ProductWithCounts[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,14 +40,12 @@ export default function DashboardPage() {
   }, [locale]);
 
   useEffect(() => {
-    if (isLoaded && user) {
-      const hasWelcomed = sessionStorage.getItem("vora_welcomed");
-      if (!hasWelcomed) {
-        toast.success("Welcome" + (user.firstName ? `, ${user.firstName}` : "") + "!");
-        sessionStorage.setItem("vora_welcomed", "true");
-      }
+    const hasWelcomed = sessionStorage.getItem("vora_welcomed");
+    if (!hasWelcomed) {
+      toast.success("Welcome!");
+      sessionStorage.setItem("vora_welcomed", "true");
     }
-  }, [isLoaded, user]);
+  }, []);
 
   const handleLogout = () => {
     sessionStorage.removeItem("vora_welcomed");
@@ -71,12 +66,10 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <LocaleSwitcher />
             <ThemeToggle />
-            <SignOutButton redirectUrl="/">
-              <Button variant="ghost" size="sm" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
-            </SignOutButton>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </div>
       </header>

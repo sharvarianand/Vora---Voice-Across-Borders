@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { Users, Megaphone } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { UserButton } from "@clerk/nextjs";
 import { useLingoContext } from "@lingo.dev/compiler/react";
 
 export default function ProductLayout({
@@ -51,7 +50,6 @@ export default function ProductLayout({
           <div className="flex items-center gap-3">
             <LocaleSwitcher />
             <ThemeToggle />
-            <UserButton />
           </div>
         </div>
       </header>

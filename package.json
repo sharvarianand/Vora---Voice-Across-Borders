@@ -11,7 +11,6 @@
     "worker": "npx tsx worker/index.ts"
   },
   "dependencies": {
-    "@clerk/nextjs": "^7.0.4",
     "@google/generative-ai": "^0.24.1",
     "@gsap/react": "^2.1.2",
     "@lingo.dev/compiler": "^0.4.0",
@@ -45,7 +44,6 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "@clerk/shared",
       "@whiskeysockets/baileys",
       "lmdb",
       "msgpackr-extract",
