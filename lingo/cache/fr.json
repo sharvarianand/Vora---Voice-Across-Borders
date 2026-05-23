@@ -579,6 +579,12 @@
     "fed791ebbc13": "Ajouter manuellement",
     "feeede665cb3": "Confiance : Élevée · Basée sur 3 ouvertures",
     "ffe9ec4e8b53": "Acheminez le prospect selon qu'il a répondu ou non à votre prospection.",
-    "ffed67a09768": "Exécuter"
+    "ffed67a09768": "Exécuter",
+    "83f95322e5fb": "Accès Vora",
+    "3c6c20e928ee": "Authentifiez-vous sans quitter la page de destination. Le panneau d'authentification est stylisé pour correspondre à la même surface produit sombre utilisée dans Vora.",
+    "0c1559e08aaa": "Pourquoi ce flux",
+    "35c1e6faac9a": "Pas de redirection d'authentification, pas de changement de contexte en pleine page. Les utilisateurs restent sur la page et accèdent au tableau de bord uniquement après la réussite de l'authentification.",
+    "aab247c224e8": "Se connecter",
+    "fce6aee66881": "S'inscrire"
   }
 }

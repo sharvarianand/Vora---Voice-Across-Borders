@@ -123,6 +123,12 @@
     "61a45881016c": "New Product",
     "f73a0e6bacf5": "No products yet",
     "0783b847bb10": "Create your first product to start managing leads and running outreach campaigns.",
-    "b030902721d0": "Create Product"
+    "b030902721d0": "Create Product",
+    "83f95322e5fb": "Vora Access",
+    "3c6c20e928ee": "Authenticate without leaving the landing page. The auth panel is styled to match the same dark product surface used across Vora.",
+    "0c1559e08aaa": "Why this flow",
+    "35c1e6faac9a": "No auth route jump, no full-page context switch. Users stay on the page and move into the dashboard only after authentication succeeds.",
+    "aab247c224e8": "Sign in",
+    "fce6aee66881": "Sign up"
   }
 }

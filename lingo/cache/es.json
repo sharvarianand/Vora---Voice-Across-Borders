@@ -579,6 +579,12 @@
     "fed791ebbc13": "Añadir Manualmente",
     "feeede665cb3": "Confianza: Alta · Basado en 3 aperturas",
     "ffe9ec4e8b53": "Dirige el lead según si ha respondido a tu prospección.",
-    "ffed67a09768": "Ejecutar"
+    "ffed67a09768": "Ejecutar",
+    "83f95322e5fb": "Acceso Vora",
+    "3c6c20e928ee": "Autentíquese sin salir de la página de destino. El panel de autenticación está diseñado para coincidir con la misma superficie oscura del producto utilizada en toda Vora.",
+    "0c1559e08aaa": "Por qué este flujo",
+    "35c1e6faac9a": "Sin salto de ruta de autenticación, sin cambio de contexto de página completa. Los usuarios permanecen en la página y se mueven al panel solo después de que la autenticación tenga éxito.",
+    "aab247c224e8": "Iniciar sesión",
+    "fce6aee66881": "Registrarse"
   }
 }

@@ -1218,3 +1218,21 @@
 2026-05-23T15:16:37.078Z [DEBUG] [Lingo.dev] 🔄 Hashes: 3c417c6a1f85, e9e80bd223c8
 2026-05-23T15:16:37.079Z [DEBUG] [Lingo.dev] [BUSY] Server is now busy (1 active)
 2026-05-23T15:16:37.382Z [DEBUG] [Lingo.dev] [IDLE] Server is now idle
+2026-05-23T18:21:42.304Z [INFO] [Lingo.dev] 🔧 Initializing translator...
+2026-05-23T18:21:42.435Z [DEBUG] [Lingo.dev] Starting translation server on port 60000
+2026-05-23T18:21:42.436Z [INFO] [Lingo.dev] Translation server listening on http://127.0.0.1:60000
+2026-05-23T18:21:42.436Z [INFO] [Lingo.dev] WebSocket server initialized
+2026-05-23T18:21:42.436Z [DEBUG] [Lingo.dev] Reloaded metadata: 578 entries
+2026-05-23T18:21:42.436Z [DEBUG] [Lingo.dev] Reloaded metadata: 578 entries
+2026-05-23T18:21:42.436Z [DEBUG] [Lingo.dev] Reloaded metadata: 578 entries
+2026-05-23T18:21:42.436Z [DEBUG] [Lingo.dev] Reloaded metadata: 578 entries
+2026-05-23T18:21:42.436Z [INFO] [Lingo.dev] Translating all 578 entries to es
+2026-05-23T18:21:42.436Z [INFO] [Lingo.dev] Translating all 578 entries to fr
+2026-05-23T18:21:42.436Z [INFO] [Lingo.dev] Translating all 578 entries to de
+2026-05-23T18:21:42.437Z [INFO] [Lingo.dev] Translating all 578 entries to hi
+2026-05-23T18:21:45.471Z [ERROR] [Lingo.dev] 1 translation error(s) for es:
+2026-05-23T18:21:45.481Z [ERROR] [Lingo.dev]   [es] Lingo.dev translation failed: {"_tag":"ForbiddenError","message":"No enabled engines accessible to this API key. Specify an explicit `engineId` in the request, or ask an admin to widen this key's engine scope."}
+2026-05-23T18:21:45.482Z [ERROR] [Lingo.dev] 1 translation error(s) for hi:
+2026-05-23T18:21:45.482Z [ERROR] [Lingo.dev]   [hi] Lingo.dev translation failed: {"_tag":"ForbiddenError","message":"No enabled engines accessible to this API key. Specify an explicit `engineId` in the request, or ask an admin to widen this key's engine scope."}
+2026-05-23T18:21:45.795Z [ERROR] [Lingo.dev] 1 translation error(s) for de:
+2026-05-23T18:21:45.799Z [ERROR] [Lingo.dev]   [de] Lingo.dev translation failed: {"_tag":"ForbiddenError","message":"No enabled engines accessible to this API key. Specify an explicit `engineId` in the request, or ask an admin to widen this key's engine scope."}

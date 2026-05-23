@@ -579,6 +579,12 @@
     "fed791ebbc13": "Manuell hinzufügen",
     "feeede665cb3": "Konfidenz: Hoch · Basierend auf 3 Öffnungen",
     "ffe9ec4e8b53": "Leiten Sie den Lead basierend darauf weiter, ob er auf Ihre Kontaktaufnahme reagiert hat.",
-    "ffed67a09768": "Ausführen"
+    "ffed67a09768": "Ausführen",
+    "83f95322e5fb": "Vora-Zugang",
+    "3c6c20e928ee": "Authentifizieren Sie sich, ohne die Zielseite zu verlassen. Das Authentifizierungspanel ist im selben dunklen Produktdesign gehalten, das überall in Vora verwendet wird.",
+    "0c1559e08aaa": "Warum dieser Ablauf",
+    "35c1e6faac9a": "Kein Auth-Route-Sprung, kein vollständiger Seitenwechsel. Benutzer bleiben auf der Seite und gelangen erst nach erfolgreicher Authentifizierung ins Dashboard.",
+    "aab247c224e8": "Anmelden",
+    "fce6aee66881": "Registrieren"
   }
 }
