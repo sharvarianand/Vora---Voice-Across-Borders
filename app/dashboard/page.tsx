@@ -36,7 +36,7 @@ export default function DashboardPage() {
     fetch("/api/products")
       .then((r) => r.json())
       .then((data) => {
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => setLoading(false));

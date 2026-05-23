@@ -24,8 +24,8 @@ export function ProductSelector() {
     if (!locale) return;
     fetch("/api/products")
       .then((r) => r.json())
-      .then(setProducts)
-      .catch(console.error);
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch(() => setProducts([]));
   }, [locale]);
 
   return (

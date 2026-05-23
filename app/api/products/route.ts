@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
 
     if (error) {
       console.error("GET /api/products error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json([]);
     }
 
     const targetLocale = normalizeLocale(
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(localized);
   } catch (err) {
     console.error("GET /api/products exception:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    return NextResponse.json([]);
   }
 }
 
