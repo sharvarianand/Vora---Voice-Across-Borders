@@ -24,9 +24,7 @@ const buildMode = !hasLingoApiKey && isProduction ? "cache-only" : "translate";
 const usePseudotranslator =
   process.env.LINGO_USE_PSEUDOTRANSLATOR === "true" || (!hasLingoApiKey && !isProduction);
 
-const nextConfig: NextConfig = {
-  output: "standalone",
-};
+const nextConfig: NextConfig = {};
 
 export default withLingo(nextConfig, {
   sourceRoot: ".",

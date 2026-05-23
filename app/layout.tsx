@@ -98,6 +98,11 @@ const clerkAppearance = {
 export const metadata: Metadata = {
   title: "Vora --voice across borders",
   description: "AI-powered outreach automation platform",
+  icons: {
+    icon: [{ url: "/vora_logo.png", type: "image/png" }],
+    shortcut: "/vora_logo.png",
+    apple: "/vora_logo.png",
+  },
 };
 
 export default async function RootLayout({
