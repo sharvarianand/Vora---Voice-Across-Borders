@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useLingoContext } from "@lingo.dev/compiler/react";
 import type { LocaleCode } from "lingo.dev/spec";
+import { useRouter } from "next/navigation";
 import { Languages, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +12,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SUPPORTED_LOCALES, getLocaleMeta, toFlagEmoji, getLocaleCookieName } from "@/lib/lingo";
-
-import { useRouter } from "next/navigation";
+import {
+  SUPPORTED_LOCALES,
+  getLocaleMeta,
+  toFlagEmoji,
+  getLocaleCookieName,
+} from "@/lib/lingo";
 
 export function LocaleSwitcher() {
   const router = useRouter();
@@ -40,14 +44,20 @@ export function LocaleSwitcher() {
             disabled={option.code === locale}
             onClick={() => {
               startTransition(async () => {
-                await setLocale(option.code as LocaleCode);
-                
-                // Manually set the cookie with robust attributes for production (GCP)
+                // Persist a long-lived cookie ourselves first.
+                // Lingo's built-in resolver writes a session cookie, which
+                // gets lost across browser restarts / new tabs in prod.
                 const cookieName = getLocaleCookieName();
                 const maxAge = 60 * 60 * 24 * 365;
                 const isProd = process.env.NODE_ENV === "production";
-                document.cookie = `${cookieName}=${option.code}; Path=/; Max-Age=${maxAge}; SameSite=Lax${isProd ? "; Secure" : ""}`;
-                
+                document.cookie =
+                  `${cookieName}=${option.code}; Path=/; Max-Age=${maxAge}; ` +
+                  `SameSite=Lax${isProd ? "; Secure" : ""}`;
+
+                // Updates the in-memory locale, persists Lingo's own cookie
+                // and triggers router.refresh() so the server re-renders
+                // the new dictionary in SSR.
+                await setLocale(option.code as LocaleCode);
                 router.refresh();
               });
             }}

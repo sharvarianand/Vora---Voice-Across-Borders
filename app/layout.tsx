@@ -1,14 +1,39 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { LingoProvider } from "@lingo.dev/compiler/react/next";
 import { getServerLocale } from "@lingo.dev/compiler/virtual/locale/server";
 import { Geist, Geist_Mono, Inter, Bebas_Neue } from "next/font/google";
+import { promises as fs } from "fs";
+import path from "path";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import LingoClientProvider from "@/components/lingo/LingoClientProvider";
 
 import GSAPProvider from "@/providers/GSAPProvider";
 import LenisProvider from "@/providers/LenisProvider";
 import "./globals.css";
+
+async function loadLingoDictionary(
+  locale: string
+): Promise<Record<string, string>> {
+  const candidatePaths = [
+    path.join(process.cwd(), "lingo", "cache", `${locale}.json`),
+    path.join(process.cwd(), ".lingo", "cache", `${locale}.json`),
+    path.join(process.cwd(), ".next", `${locale}.json`),
+  ];
+
+  for (const filePath of candidatePaths) {
+    try {
+      const raw = await fs.readFile(filePath, "utf-8");
+      const parsed = JSON.parse(raw) as { entries?: Record<string, string> };
+      if (parsed?.entries && typeof parsed.entries === "object") {
+        return parsed.entries;
+      }
+    } catch {
+      // try next candidate
+    }
+  }
+  return {};
+}
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,6 +106,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getServerLocale();
+  const initialTranslations = await loadLingoDictionary(locale);
 
   return (
     <ClerkProvider
@@ -94,7 +120,11 @@ export default async function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${bebasNeue.variable} font-sans antialiased`}
         >
-          <LingoProvider initialLocale={locale} devWidget={{ enabled: false }}>
+          <LingoClientProvider
+            initialLocale={locale}
+            initialTranslations={initialTranslations}
+            devWidget={{ enabled: false }}
+          >
             <GSAPProvider>
               <LenisProvider>
                 <ThemeProvider>
@@ -103,7 +133,7 @@ export default async function RootLayout({
                 </ThemeProvider>
               </LenisProvider>
             </GSAPProvider>
-          </LingoProvider>
+          </LingoClientProvider>
         </body>
       </html>
     </ClerkProvider>
