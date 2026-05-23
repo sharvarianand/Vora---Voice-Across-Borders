@@ -1033,3 +1033,8 @@
 2026-05-23T14:51:34.988Z [DEBUG] [Lingo.dev] Starting translation server on port 60000
 2026-05-23T14:51:35.044Z [INFO] [Lingo.dev] Translation server listening on http://127.0.0.1:60000
 2026-05-23T14:51:35.046Z [INFO] [Lingo.dev] WebSocket server initialized
+2026-05-23T14:59:38.831Z [INFO] [Lingo.dev] Port 60000 is available, starting new server...
+2026-05-23T14:59:39.381Z [INFO] [Lingo.dev] 🔧 Initializing translator...
+2026-05-23T14:59:39.462Z [DEBUG] [Lingo.dev] Starting translation server on port 60000
+2026-05-23T14:59:39.463Z [INFO] [Lingo.dev] Translation server listening on http://127.0.0.1:60000
+2026-05-23T14:59:39.463Z [INFO] [Lingo.dev] WebSocket server initialized
